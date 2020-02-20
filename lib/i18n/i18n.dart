@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'messages_all.dart';
 
-class AppLocalizationsDelegate extends LocalizationsDelegate<I18n> {
+class AppLocalizationsDelegate
+    extends LocalizationsDelegate<FluffychatLocalizations> {
   const AppLocalizationsDelegate();
 
   @override
@@ -11,35 +12,51 @@ class AppLocalizationsDelegate extends LocalizationsDelegate<I18n> {
   }
 
   @override
-  Future<I18n> load(Locale locale) {
-    return I18n.load(locale);
+  Future<FluffychatLocalizations> load(Locale locale) {
+    return FluffychatLocalizations.load(locale);
   }
 
   @override
-  bool shouldReload(LocalizationsDelegate<I18n> old) {
+  bool shouldReload(LocalizationsDelegate<FluffychatLocalizations> old) {
     return false;
   }
 }
 
 class I18n {
-  I18n(this.localeName);
+  static FluffychatLocalizations tr(BuildContext context) {
+    FluffychatLocalizations fluffychatLocalizations =
+        FluffychatLocalizations.of(context);
+    if (fluffychatLocalizations != null) {
+      return fluffychatLocalizations;
+    } else {
+      return FluffychatLocalizations("");
+    }
+  }
+}
 
-  static Future<I18n> load(Locale locale) {
+class FluffychatLocalizations {
+  FluffychatLocalizations(this.localeName);
+
+  static Future<FluffychatLocalizations> load(Locale locale) {
     final String name =
         locale.countryCode == null ? locale.languageCode : locale.toString();
     final String localeName = Intl.canonicalizedLocale(name);
 
     return initializeMessages(localeName).then((bool _) {
       Intl.defaultLocale = localeName;
-      return I18n(localeName);
+      return FluffychatLocalizations(localeName);
     });
   }
 
-  static I18n of(BuildContext context) {
-    return Localizations.of<I18n>(context, I18n);
+  static FluffychatLocalizations of(BuildContext context) {
+    return Localizations.of<FluffychatLocalizations>(
+        context, FluffychatLocalizations);
   }
 
   final String localeName;
+
+  // Dummy function to prevent loops
+  FluffychatLocalizations tr(BuildContext context) => this;
 
   /* <=============> Translations <=============> */
 

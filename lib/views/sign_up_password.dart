@@ -29,7 +29,7 @@ class _SignUpPasswordState extends State<SignUpPassword> {
   void _signUpAction(BuildContext context, {Map<String, dynamic> auth}) async {
     MatrixState matrix = Matrix.of(context);
     if (passwordController.text.isEmpty) {
-      setState(() => passwordError = I18n.of(context).pleaseEnterYourPassword);
+      setState(() => passwordError = I18n.tr(context).pleaseEnterYourPassword);
     } else {
       setState(() => passwordError = null);
     }
@@ -96,7 +96,7 @@ class _SignUpPasswordState extends State<SignUpPassword> {
     try {
       await matrix.client.setDisplayname(widget.displayname);
     } catch (exception) {
-      Toast.show(I18n.of(context).couldNotSetDisplayname, context, duration: 5);
+      Toast.show(I18n.tr(context).couldNotSetDisplayname, context, duration: 5);
     }
     if (widget.avatar != null) {
       try {
@@ -107,7 +107,7 @@ class _SignUpPasswordState extends State<SignUpPassword> {
           ),
         );
       } catch (exception) {
-        Toast.show(I18n.of(context).couldNotSetAvatar, context, duration: 5);
+        Toast.show(I18n.tr(context).couldNotSetAvatar, context, duration: 5);
       }
     }
     await Navigator.of(context).pushAndRemoveUntil(
@@ -119,7 +119,7 @@ class _SignUpPasswordState extends State<SignUpPassword> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(I18n.of(context).secureYourAccountWithAPassword),
+        title: Text(I18n.tr(context).secureYourAccountWithAPassword),
       ),
       body: ListView(
         padding: EdgeInsets.symmetric(
@@ -156,7 +156,7 @@ class _SignUpPasswordState extends State<SignUpPassword> {
                     onPressed: () =>
                         setState(() => showPassword = !showPassword),
                   ),
-                  labelText: I18n.of(context).password),
+                  labelText: I18n.tr(context).password),
             ),
           ),
           SizedBox(height: 20),
@@ -172,7 +172,7 @@ class _SignUpPasswordState extends State<SignUpPassword> {
               child: loading
                   ? CircularProgressIndicator()
                   : Text(
-                      I18n.of(context).createAccountNow.toUpperCase(),
+                      I18n.tr(context).createAccountNow.toUpperCase(),
                       style: TextStyle(color: Colors.white, fontSize: 16),
                     ),
               onPressed: () => loading ? null : _signUpAction(context),

@@ -23,7 +23,7 @@ class _ArchiveState extends State<Archive> {
     return AdaptivePageLayout(
       firstScaffold: Scaffold(
         appBar: AppBar(
-          title: Text(I18n.of(context).archive),
+          title: Text(I18n.tr(context).archive),
         ),
         body: FutureBuilder<List<Room>>(
           future: getArchive(context),

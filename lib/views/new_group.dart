@@ -69,7 +69,7 @@ class _NewGroupState extends State<_NewGroup> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(I18n.of(context).createNewGroup),
+        title: Text(I18n.tr(context).createNewGroup),
         elevation: 0,
       ),
       body: Column(
@@ -85,13 +85,13 @@ class _NewGroupState extends State<_NewGroup> {
               onSubmitted: (s) => submitAction(context),
               decoration: InputDecoration(
                   border: OutlineInputBorder(),
-                  labelText: I18n.of(context).optionalGroupName,
+                  labelText: I18n.tr(context).optionalGroupName,
                   prefixIcon: Icon(Icons.people),
-                  hintText: I18n.of(context).enterAGroupName),
+                  hintText: I18n.tr(context).enterAGroupName),
             ),
           ),
           SwitchListTile(
-            title: Text(I18n.of(context).groupIsPublic),
+            title: Text(I18n.tr(context).groupIsPublic),
             value: publicGroup,
             onChanged: (bool b) => setState(() => publicGroup = b),
           ),

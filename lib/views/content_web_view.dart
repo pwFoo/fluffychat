@@ -16,7 +16,7 @@ class ContentWebView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          I18n.of(context).contentViewer,
+          I18n.tr(context).contentViewer,
         ),
         actions: <Widget>[
           IconButton(

@@ -38,7 +38,7 @@ class _SignUpState extends State<SignUp> {
   void signUpAction(BuildContext context) async {
     MatrixState matrix = Matrix.of(context);
     if (usernameController.text.isEmpty) {
-      setState(() => usernameError = I18n.of(context).pleaseChooseAUsername);
+      setState(() => usernameError = I18n.tr(context).pleaseChooseAUsername);
     } else {
       setState(() => usernameError = null);
     }
@@ -61,12 +61,12 @@ class _SignUpState extends State<SignUp> {
       setState(() => loading = true);
       if (!await matrix.client.checkServer(homeserver)) {
         setState(
-            () => serverError = I18n.of(context).homeserverIsNotCompatible);
+            () => serverError = I18n.tr(context).homeserverIsNotCompatible);
 
         return setState(() => loading = false);
       }
     } catch (exception) {
-      setState(() => serverError = I18n.of(context).connectionAttemptFailed);
+      setState(() => serverError = I18n.tr(context).connectionAttemptFailed);
       return setState(() => loading = false);
     }
 
@@ -116,7 +116,9 @@ class _SignUpState extends State<SignUp> {
               leading: CircleAvatar(
                 backgroundImage: avatar == null ? null : FileImage(avatar),
                 backgroundColor: avatar == null
-                    ? Theme.of(context).brightness == Brightness.dark ? Color(0xff121212) : Colors.white
+                    ? Theme.of(context).brightness == Brightness.dark
+                        ? Color(0xff121212)
+                        : Colors.white
                     : Theme.of(context).secondaryHeaderColor,
                 child: avatar == null
                     ? Icon(Icons.camera_alt,
@@ -130,15 +132,17 @@ class _SignUpState extends State<SignUp> {
                       color: Colors.red,
                     ),
               title: Text(avatar == null
-                  ? I18n.of(context).setAProfilePicture
-                  : I18n.of(context).discardPicture),
+                  ? I18n.tr(context).setAProfilePicture
+                  : I18n.tr(context).discardPicture),
               onTap: avatar == null
                   ? setAvatarAction
                   : () => setState(() => avatar = null),
             ),
             ListTile(
               leading: CircleAvatar(
-                backgroundColor: Theme.of(context).brightness == Brightness.dark ? Color(0xff121212) : Colors.white,
+                backgroundColor: Theme.of(context).brightness == Brightness.dark
+                    ? Color(0xff121212)
+                    : Colors.white,
                 child: Icon(
                   Icons.account_circle,
                   color: Theme.of(context).primaryColor,
@@ -149,9 +153,9 @@ class _SignUpState extends State<SignUp> {
                 controller: usernameController,
                 onSubmitted: (s) => signUpAction(context),
                 decoration: InputDecoration(
-                    hintText: I18n.of(context).username,
+                    hintText: I18n.tr(context).username,
                     errorText: usernameError,
-                    labelText: I18n.of(context).chooseAUsername),
+                    labelText: I18n.tr(context).chooseAUsername),
               ),
             ),
             SizedBox(height: 20),
@@ -167,7 +171,7 @@ class _SignUpState extends State<SignUp> {
                 child: loading
                     ? CircularProgressIndicator()
                     : Text(
-                        I18n.of(context).signUp.toUpperCase(),
+                        I18n.tr(context).signUp.toUpperCase(),
                         style: TextStyle(color: Colors.white, fontSize: 16),
                       ),
                 onPressed: () => signUpAction(context),
@@ -176,7 +180,7 @@ class _SignUpState extends State<SignUp> {
             Center(
               child: FlatButton(
                 child: Text(
-                  I18n.of(context).alreadyHaveAnAccount,
+                  I18n.tr(context).alreadyHaveAnAccount,
                   style: TextStyle(
                     decoration: TextDecoration.underline,
                     color: Colors.blue,

@@ -79,7 +79,7 @@ class Message extends StatelessWidget {
                   children: <Widget>[
                     Text(
                       ownMessage
-                          ? I18n.of(context).you
+                          ? I18n.tr(context).you
                           : event.sender.calcDisplayname(),
                       style: TextStyle(
                         color: ownMessage

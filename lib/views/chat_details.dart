@@ -34,8 +34,8 @@ class _ChatDetailsState extends State<ChatDetails> {
   List<User> members;
   void setDisplaynameAction(BuildContext context) async {
     final String displayname = await SimpleDialogs(context).enterText(
-      titleText: I18n.of(context).changeTheNameOfTheGroup,
-      labelText: I18n.of(context).changeTheNameOfTheGroup,
+      titleText: I18n.tr(context).changeTheNameOfTheGroup,
+      labelText: I18n.tr(context).changeTheNameOfTheGroup,
       hintText: widget.room.getLocalizedDisplayname(context),
     );
     if (displayname == null) return;
@@ -45,7 +45,7 @@ class _ChatDetailsState extends State<ChatDetails> {
     );
     if (success != false) {
       Toast.show(
-        I18n.of(context).displaynameHasBeenChanged,
+        I18n.tr(context).displaynameHasBeenChanged,
         context,
         duration: Toast.LENGTH_LONG,
       );
@@ -54,9 +54,9 @@ class _ChatDetailsState extends State<ChatDetails> {
 
   void setCanonicalAliasAction(context) async {
     final String s = await SimpleDialogs(context).enterText(
-      titleText: I18n.of(context).setInvitationLink,
-      labelText: I18n.of(context).setInvitationLink,
-      hintText: I18n.of(context).alias.toLowerCase(),
+      titleText: I18n.tr(context).setInvitationLink,
+      labelText: I18n.tr(context).setInvitationLink,
+      hintText: I18n.tr(context).alias.toLowerCase(),
       prefixText: "#",
       suffixText: ":" + widget.room.client.userID.domain,
     );
@@ -96,11 +96,11 @@ class _ChatDetailsState extends State<ChatDetails> {
 
   void setTopicAction(BuildContext context) async {
     final String displayname = await SimpleDialogs(context).enterText(
-      titleText: I18n.of(context).setGroupDescription,
-      labelText: I18n.of(context).setGroupDescription,
+      titleText: I18n.tr(context).setGroupDescription,
+      labelText: I18n.tr(context).setGroupDescription,
       hintText: (widget.room.topic?.isNotEmpty ?? false)
           ? widget.room.topic
-          : I18n.of(context).addGroupDescription,
+          : I18n.tr(context).addGroupDescription,
       multiLine: true,
     );
     if (displayname == null) return;
@@ -110,7 +110,7 @@ class _ChatDetailsState extends State<ChatDetails> {
     );
     if (success != false) {
       Toast.show(
-        I18n.of(context).groupDescriptionHasBeenChanged,
+        I18n.tr(context).groupDescriptionHasBeenChanged,
         context,
         duration: Toast.LENGTH_LONG,
       );
@@ -135,7 +135,7 @@ class _ChatDetailsState extends State<ChatDetails> {
     );
     if (success != false) {
       Toast.show(
-        I18n.of(context).avatarHasBeenChanged,
+        I18n.tr(context).avatarHasBeenChanged,
         context,
         duration: Toast.LENGTH_LONG,
       );
@@ -161,10 +161,10 @@ class _ChatDetailsState extends State<ChatDetails> {
     if (widget.room == null) {
       return Scaffold(
         appBar: AppBar(
-          title: Text(I18n.of(context).oopsSomethingWentWrong),
+          title: Text(I18n.tr(context).oopsSomethingWentWrong),
         ),
         body: Center(
-          child: Text(I18n.of(context).youAreNoLongerParticipatingInThisChat),
+          child: Text(I18n.tr(context).youAreNoLongerParticipatingInThisChat),
         ),
       );
     }
@@ -195,7 +195,7 @@ class _ChatDetailsState extends State<ChatDetails> {
                       Clipboard.setData(
                         ClipboardData(text: widget.room.canonicalAlias),
                       );
-                      Toast.show(I18n.of(context).copiedToClipboard, context,
+                      Toast.show(I18n.tr(context).copiedToClipboard, context,
                           duration: 5);
                     },
                   ),
@@ -229,13 +229,13 @@ class _ChatDetailsState extends State<ChatDetails> {
                                 child: Icon(Icons.edit),
                               )
                             : null,
-                        title: Text("${I18n.of(context).groupDescription}:",
+                        title: Text("${I18n.tr(context).groupDescription}:",
                             style: TextStyle(
                                 color: Theme.of(context).primaryColor,
                                 fontWeight: FontWeight.bold)),
                         subtitle: LinkText(
                           text: widget.room.topic?.isEmpty ?? true
-                              ? I18n.of(context).addGroupDescription
+                              ? I18n.tr(context).addGroupDescription
                               : widget.room.topic,
                           linkStyle: TextStyle(color: Colors.blueAccent),
                           textStyle: TextStyle(
@@ -250,7 +250,7 @@ class _ChatDetailsState extends State<ChatDetails> {
                       Divider(thickness: 1),
                       ListTile(
                         title: Text(
-                          I18n.of(context).settings,
+                          I18n.tr(context).settings,
                           style: TextStyle(
                             color: Theme.of(context).primaryColor,
                             fontWeight: FontWeight.bold,
@@ -265,7 +265,7 @@ class _ChatDetailsState extends State<ChatDetails> {
                             foregroundColor: Colors.grey,
                             child: Icon(Icons.people),
                           ),
-                          title: Text(I18n.of(context).changeTheNameOfTheGroup),
+                          title: Text(I18n.tr(context).changeTheNameOfTheGroup),
                           subtitle: Text(
                               widget.room.getLocalizedDisplayname(context)),
                           onTap: () => setDisplaynameAction(context),
@@ -280,11 +280,11 @@ class _ChatDetailsState extends State<ChatDetails> {
                             child: Icon(Icons.link),
                           ),
                           onTap: () => setCanonicalAliasAction(context),
-                          title: Text(I18n.of(context).setInvitationLink),
+                          title: Text(I18n.tr(context).setInvitationLink),
                           subtitle: Text(
                               (widget.room.canonicalAlias?.isNotEmpty ?? false)
                                   ? widget.room.canonicalAlias
-                                  : I18n.of(context).none),
+                                  : I18n.tr(context).none),
                         ),
                       PopupMenuButton(
                         child: ListTile(
@@ -294,7 +294,7 @@ class _ChatDetailsState extends State<ChatDetails> {
                               foregroundColor: Colors.grey,
                               child: Icon(Icons.public)),
                           title: Text(
-                              I18n.of(context).whoIsAllowedToJoinThisGroup),
+                              I18n.tr(context).whoIsAllowedToJoinThisGroup),
                           subtitle: Text(
                             widget.room.joinRules.getLocalizedString(context),
                           ),
@@ -328,7 +328,7 @@ class _ChatDetailsState extends State<ChatDetails> {
                             child: Icon(Icons.visibility),
                           ),
                           title:
-                              Text(I18n.of(context).visibilityOfTheChatHistory),
+                              Text(I18n.tr(context).visibilityOfTheChatHistory),
                           subtitle: Text(
                             widget.room.historyVisibility
                                 .getLocalizedString(context),
@@ -376,7 +376,7 @@ class _ChatDetailsState extends State<ChatDetails> {
                               child: Icon(Icons.info_outline),
                             ),
                             title:
-                                Text(I18n.of(context).areGuestsAllowedToJoin),
+                                Text(I18n.tr(context).areGuestsAllowedToJoin),
                             subtitle: Text(
                               widget.room.guestAccess
                                   .getLocalizedString(context),
@@ -410,9 +410,9 @@ class _ChatDetailsState extends State<ChatDetails> {
                       ListTile(
                         title: Text(
                           actualMembersCount > 1
-                              ? I18n.of(context).countParticipants(
+                              ? I18n.tr(context).countParticipants(
                                   actualMembersCount.toString())
-                              : I18n.of(context).emptyChat,
+                              : I18n.tr(context).emptyChat,
                           style: TextStyle(
                             color: Theme.of(context).primaryColor,
                             fontWeight: FontWeight.bold,
@@ -422,7 +422,7 @@ class _ChatDetailsState extends State<ChatDetails> {
                       Divider(height: 1),
                       widget.room.canInvite
                           ? ListTile(
-                              title: Text(I18n.of(context).inviteContact),
+                              title: Text(I18n.tr(context).inviteContact),
                               leading: CircleAvatar(
                                 child: Icon(Icons.add),
                                 backgroundColor: Theme.of(context).primaryColor,
@@ -441,7 +441,7 @@ class _ChatDetailsState extends State<ChatDetails> {
                 : i < members.length + 1
                     ? ParticipantListItem(members[i - 1])
                     : ListTile(
-                        title: Text(I18n.of(context).loadCountMoreParticipants(
+                        title: Text(I18n.tr(context).loadCountMoreParticipants(
                             (actualMembersCount - members.length).toString())),
                         leading: CircleAvatar(
                           backgroundColor:

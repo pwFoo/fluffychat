@@ -51,10 +51,10 @@ class _SettingsState extends State<Settings> {
 
   void setDisplaynameAction(BuildContext context) async {
     final String displayname = await SimpleDialogs(context).enterText(
-      titleText: I18n.of(context).editDisplayname,
+      titleText: I18n.tr(context).editDisplayname,
       hintText:
           profile?.displayname ?? Matrix.of(context).client.userID.localpart,
-      labelText: I18n.of(context).enterAUsername,
+      labelText: I18n.tr(context).enterAUsername,
     );
     if (displayname == null) return;
     final MatrixState matrix = Matrix.of(context);
@@ -87,7 +87,7 @@ class _SettingsState extends State<Settings> {
     );
     if (success != false) {
       Toast.show(
-        I18n.of(context).avatarHasBeenChanged,
+        I18n.tr(context).avatarHasBeenChanged,
         context,
         duration: Toast.LENGTH_LONG,
       );
@@ -116,7 +116,7 @@ class _SettingsState extends State<Settings> {
             backgroundColor: Theme.of(context).appBarTheme.color,
             flexibleSpace: FlexibleSpaceBar(
               title: Text(
-                I18n.of(context).settings,
+                I18n.tr(context).settings,
                 style: TextStyle(
                     color: Theme.of(context).appBarTheme.textTheme.title.color),
               ),
@@ -134,7 +134,7 @@ class _SettingsState extends State<Settings> {
           children: <Widget>[
             ListTile(
               title: Text(
-                I18n.of(context).account,
+                I18n.tr(context).account,
                 style: TextStyle(
                   color: Theme.of(context).primaryColor,
                   fontWeight: FontWeight.bold,
@@ -143,13 +143,13 @@ class _SettingsState extends State<Settings> {
             ),
             ListTile(
               trailing: Icon(Icons.edit),
-              title: Text(I18n.of(context).editDisplayname),
+              title: Text(I18n.tr(context).editDisplayname),
               subtitle: Text(profile?.displayname ?? client.userID.localpart),
               onTap: () => setDisplaynameAction(context),
             ),
             ListTile(
               trailing: Icon(Icons.color_lens),
-              title: Text(I18n.of(context).changeTheme),
+              title: Text(I18n.tr(context).changeTheme),
               onTap: () async => await Navigator.of(context).push(
                 AppRoute.defaultRoute(
                   context,
@@ -159,7 +159,7 @@ class _SettingsState extends State<Settings> {
             ),
             ListTile(
               trailing: Icon(Icons.devices_other),
-              title: Text(I18n.of(context).devices),
+              title: Text(I18n.tr(context).devices),
               onTap: () async => await Navigator.of(context).push(
                 AppRoute.defaultRoute(
                   context,
@@ -169,13 +169,13 @@ class _SettingsState extends State<Settings> {
             ),
             ListTile(
               trailing: Icon(Icons.exit_to_app),
-              title: Text(I18n.of(context).logout),
+              title: Text(I18n.tr(context).logout),
               onTap: () => logoutAction(context),
             ),
             Divider(thickness: 1),
             ListTile(
               title: Text(
-                I18n.of(context).about,
+                I18n.tr(context).about,
                 style: TextStyle(
                   color: Theme.of(context).primaryColor,
                   fontWeight: FontWeight.bold,
@@ -191,19 +191,19 @@ class _SettingsState extends State<Settings> {
             ),
             ListTile(
               leading: Icon(Icons.donut_large),
-              title: Text("Liberapay " + I18n.of(context).donate),
+              title: Text("Liberapay " + I18n.tr(context).donate),
               onTap: () =>
                   launch("https://liberapay.com/KrilleChritzelius/donate"),
             ),
             ListTile(
               leading: Icon(Icons.help),
-              title: Text(I18n.of(context).help),
+              title: Text(I18n.tr(context).help),
               onTap: () => launch(
                   "https://gitlab.com/ChristianPauly/fluffychat-flutter/issues"),
             ),
             ListTile(
               leading: Icon(Icons.account_circle),
-              title: Text(I18n.of(context).accountInformations),
+              title: Text(I18n.tr(context).accountInformations),
               onTap: () => Navigator.of(context).push(
                 AppRoute.defaultRoute(
                   context,
@@ -213,19 +213,19 @@ class _SettingsState extends State<Settings> {
             ),
             ListTile(
               leading: Icon(Icons.list),
-              title: Text(I18n.of(context).changelog),
+              title: Text(I18n.tr(context).changelog),
               onTap: () => launch(
                   "https://gitlab.com/ChristianPauly/fluffychat-flutter/blob/master/CHANGELOG.md"),
             ),
             ListTile(
               leading: Icon(Icons.link),
-              title: Text(I18n.of(context).license),
+              title: Text(I18n.tr(context).license),
               onTap: () => launch(
                   "https://gitlab.com/ChristianPauly/fluffychat-flutter/raw/master/LICENSE"),
             ),
             ListTile(
               leading: Icon(Icons.code),
-              title: Text(I18n.of(context).sourceCode),
+              title: Text(I18n.tr(context).sourceCode),
               onTap: () => launch(
                   "https://gitlab.com/ChristianPauly/fluffychat-flutter"),
             ),

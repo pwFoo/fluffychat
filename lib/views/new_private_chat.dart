@@ -106,7 +106,7 @@ class _NewPrivateChatState extends State<_NewPrivateChat> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(I18n.of(context).newPrivateChat),
+        title: Text(I18n.tr(context).newPrivateChat),
         elevation: 0,
       ),
       body: Column(
@@ -125,24 +125,24 @@ class _NewPrivateChatState extends State<_NewPrivateChat> {
                 onFieldSubmitted: (s) => submitAction(context),
                 validator: (value) {
                   if (value.isEmpty) {
-                    return I18n.of(context).pleaseEnterAMatrixIdentifier;
+                    return I18n.tr(context).pleaseEnterAMatrixIdentifier;
                   }
                   final MatrixState matrix = Matrix.of(context);
                   String mxid = "@" + controller.text.trim();
                   if (mxid == matrix.client.userID) {
-                    return I18n.of(context).youCannotInviteYourself;
+                    return I18n.tr(context).youCannotInviteYourself;
                   }
                   if (!mxid.contains("@")) {
-                    return I18n.of(context).makeSureTheIdentifierIsValid;
+                    return I18n.tr(context).makeSureTheIdentifierIsValid;
                   }
                   if (!mxid.contains(":")) {
-                    return I18n.of(context).makeSureTheIdentifierIsValid;
+                    return I18n.tr(context).makeSureTheIdentifierIsValid;
                   }
                   return null;
                 },
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
-                  labelText: I18n.of(context).enterAUsername,
+                  labelText: I18n.tr(context).enterAUsername,
                   prefixIcon: loading
                       ? Container(
                           padding: const EdgeInsets.all(8.0),
@@ -162,7 +162,7 @@ class _NewPrivateChatState extends State<_NewPrivateChat> {
                             )
                           : Icon(Icons.account_circle),
                   prefixText: "@",
-                  hintText: "${I18n.of(context).username.toLowerCase()}",
+                  hintText: "${I18n.tr(context).username.toLowerCase()}",
                 ),
               ),
             ),
@@ -209,11 +209,11 @@ class _NewPrivateChatState extends State<_NewPrivateChat> {
                 Icons.share,
                 size: 16,
               ),
-              onTap: () => Share.share(I18n.of(context).inviteText(
+              onTap: () => Share.share(I18n.tr(context).inviteText(
                   Matrix.of(context).client.userID,
                   "https://matrix.to/#/${Matrix.of(context).client.userID}")),
               title: Text(
-                "${I18n.of(context).yourOwnUsername}:",
+                "${I18n.tr(context).yourOwnUsername}:",
                 style: TextStyle(
                   fontStyle: FontStyle.italic,
                 ),

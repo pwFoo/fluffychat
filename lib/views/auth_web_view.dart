@@ -19,7 +19,7 @@ class AuthWebView extends StatelessWidget {
     if (kIsWeb) launch(url);
     return Scaffold(
       appBar: AppBar(
-        title: Text(I18n.of(context).authentication),
+        title: Text(I18n.tr(context).authentication),
         leading: IconButton(
           icon: Icon(Icons.close),
           onPressed: () {

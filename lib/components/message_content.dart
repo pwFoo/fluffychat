@@ -68,7 +68,7 @@ class MessageContent extends StatelessWidget {
                   children: <Widget>[
                     Icon(Icons.play_arrow, color: Colors.white),
                     Text(
-                      I18n.of(context).play(event.body),
+                      I18n.tr(context).play(event.body),
                       overflow: TextOverflow.fade,
                       softWrap: false,
                       maxLines: 1,
@@ -93,7 +93,7 @@ class MessageContent extends StatelessWidget {
                   children: <Widget>[
                     Icon(Icons.play_arrow, color: Colors.white),
                     Text(
-                      I18n.of(context).play(event.body),
+                      I18n.tr(context).play(event.body),
                       overflow: TextOverflow.fade,
                       softWrap: false,
                       maxLines: 1,
@@ -115,7 +115,7 @@ class MessageContent extends StatelessWidget {
               child: RaisedButton(
                 color: Colors.blueGrey,
                 child: Text(
-                  I18n.of(context).download(event.body),
+                  I18n.tr(context).download(event.body),
                   overflow: TextOverflow.fade,
                   softWrap: false,
                   maxLines: 1,
@@ -150,7 +150,7 @@ class MessageContent extends StatelessWidget {
         );
       default:
         return Text(
-          I18n.of(context).userSentUnknownEvent(
+          I18n.tr(context).userSentUnknownEvent(
               event.sender.calcDisplayname(), event.typeKey),
           style: TextStyle(
             color: textColor,

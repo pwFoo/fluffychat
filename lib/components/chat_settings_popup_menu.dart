@@ -43,15 +43,15 @@ class _ChatSettingsPopupMenuState extends State<ChatSettingsPopupMenu> {
       widget.room.pushRuleState == PushRuleState.notify
           ? PopupMenuItem<String>(
               value: "mute",
-              child: Text(I18n.of(context).muteChat),
+              child: Text(I18n.tr(context).muteChat),
             )
           : PopupMenuItem<String>(
               value: "unmute",
-              child: Text(I18n.of(context).unmuteChat),
+              child: Text(I18n.tr(context).unmuteChat),
             ),
       PopupMenuItem<String>(
         value: "leave",
-        child: Text(I18n.of(context).leave),
+        child: Text(I18n.tr(context).leave),
       ),
     ];
     if (widget.displayChatDetails) {
@@ -59,7 +59,7 @@ class _ChatSettingsPopupMenuState extends State<ChatSettingsPopupMenu> {
         0,
         PopupMenuItem<String>(
           value: "details",
-          child: Text(I18n.of(context).chatDetails),
+          child: Text(I18n.tr(context).chatDetails),
         ),
       );
     }

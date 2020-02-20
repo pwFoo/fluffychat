@@ -36,13 +36,13 @@ class ThemesSettingsState extends State<ThemesSettings> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(I18n.of(context).changeTheme),
+        title: Text(I18n.tr(context).changeTheme),
       ),
       body: Column(
         children: <Widget>[
           RadioListTile<Themes>(
             title: Text(
-              I18n.of(context).systemTheme,
+              I18n.tr(context).systemTheme,
             ),
             value: Themes.system,
             groupValue: _selectedTheme,
@@ -56,7 +56,7 @@ class ThemesSettingsState extends State<ThemesSettings> {
           ),
           RadioListTile<Themes>(
             title: Text(
-              I18n.of(context).lightTheme,
+              I18n.tr(context).lightTheme,
             ),
             value: Themes.light,
             groupValue: _selectedTheme,
@@ -70,7 +70,7 @@ class ThemesSettingsState extends State<ThemesSettings> {
           ),
           RadioListTile<Themes>(
             title: Text(
-              I18n.of(context).darkTheme,
+              I18n.tr(context).darkTheme,
             ),
             value: Themes.dark,
             groupValue: _selectedTheme,
@@ -85,7 +85,7 @@ class ThemesSettingsState extends State<ThemesSettings> {
           Divider(thickness: 1),
           ListTile(
             title: Text(
-              I18n.of(context).useAmoledTheme,
+              I18n.tr(context).useAmoledTheme,
             ),
             trailing: Switch(
               value: _amoledEnabled,

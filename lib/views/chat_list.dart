@@ -89,7 +89,9 @@ class _ChatListState extends State<ChatList> {
         }
       },
       onError: (error) => Toast.show(
-          I18n.of(context).oopsSomethingWentWrong + " " + error.toString(),
+          I18n.tr(context).oopsSomethingWentWrong +
+              " " +
+              error.toString(),
           context,
           duration: 5),
     );
@@ -122,13 +124,13 @@ class _ChatListState extends State<ChatList> {
                 controller: searchController,
                 decoration: InputDecoration(
                   border: InputBorder.none,
-                  hintText: I18n.of(context).searchForAChat,
+                  hintText: I18n.tr(context).searchForAChat,
                 ),
               )
             : Text(
                 selectMode == SelectMode.share
-                    ? I18n.of(context).share
-                    : I18n.of(context).fluffychat,
+                    ? I18n.tr(context).share
+                    : I18n.tr(context).fluffychat,
               ),
         leading: searchMode
             ? IconButton(
@@ -180,11 +182,13 @@ class _ChatListState extends State<ChatList> {
                         <PopupMenuEntry<String>>[
                       PopupMenuItem<String>(
                         value: "archive",
-                        child: Text(I18n.of(context).archive),
+                        child:
+                            Text(I18n.tr(context).archive),
                       ),
                       PopupMenuItem<String>(
                         value: "settings",
-                        child: Text(I18n.of(context).settings),
+                        child:
+                            Text(I18n.tr(context).settings),
                       ),
                     ],
                   ),
@@ -200,9 +204,8 @@ class _ChatListState extends State<ChatList> {
             child: Icon(Icons.people_outline),
             foregroundColor: Colors.white,
             backgroundColor: Colors.blue,
-            label: I18n.of(context).createNewGroup,
-            labelStyle:
-                TextStyle(fontSize: 18.0, color: Colors.black),
+            label: I18n.tr(context).createNewGroup,
+            labelStyle: TextStyle(fontSize: 18.0, color: Colors.black),
             onTap: () => Navigator.of(context).pushAndRemoveUntil(
                 AppRoute.defaultRoute(context, NewGroupView()),
                 (r) => r.isFirst),
@@ -211,10 +214,8 @@ class _ChatListState extends State<ChatList> {
             child: Icon(Icons.person_add),
             foregroundColor: Colors.white,
             backgroundColor: Colors.green,
-            label: I18n.of(context).newPrivateChat,
-            labelStyle: TextStyle(
-                fontSize: 18.0,
-                color: Colors.black),
+            label: I18n.tr(context).newPrivateChat,
+            labelStyle: TextStyle(fontSize: 18.0, color: Colors.black),
             onTap: () => Navigator.of(context).pushAndRemoveUntil(
                 AppRoute.defaultRoute(context, NewPrivateChatView()),
                 (r) => r.isFirst),
@@ -242,8 +243,9 @@ class _ChatListState extends State<ChatList> {
                       color: Colors.grey,
                     ),
                     Text(searchMode
-                        ? I18n.of(context).noRoomsFound
-                        : I18n.of(context).startYourFirstChat),
+                        ? I18n.tr(context).noRoomsFound
+                        : I18n.tr(context)
+                            .startYourFirstChat),
                   ],
                 ),
               );

@@ -29,7 +29,7 @@ class AppInfo extends StatelessWidget {
       body: ListView(
         children: <Widget>[
           ListTile(
-            title: Text(I18n.of(context).yourOwnUsername + ":"),
+            title: Text(I18n.tr(context).yourOwnUsername + ":"),
             subtitle: Text(client.userID),
           ),
           ListTile(

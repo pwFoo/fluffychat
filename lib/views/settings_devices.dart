@@ -46,8 +46,8 @@ class DevicesSettingsState extends State<DevicesSettings> {
         .tryRequestWithLoadingDialog(matrix.client.deleteDevices(deviceIds),
             onAdditionalAuth: (MatrixException exception) async {
       final String password = await SimpleDialogs(context).enterText(
-          titleText: I18n.of(context).pleaseEnterYourPassword,
-          labelText: I18n.of(context).pleaseEnterYourPassword,
+          titleText: I18n.tr(context).pleaseEnterYourPassword,
+          labelText: I18n.tr(context).pleaseEnterYourPassword,
           hintText: "******",
           password: true);
       if (password == null) return;
@@ -63,7 +63,7 @@ class DevicesSettingsState extends State<DevicesSettings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(I18n.of(context).devices)),
+      appBar: AppBar(title: Text(I18n.tr(context).devices)),
       body: FutureBuilder<bool>(
         future: _loadUserDevices(context),
         builder: (BuildContext context, snapshot) {
@@ -98,7 +98,7 @@ class DevicesSettingsState extends State<DevicesSettings> {
               if (devices.isNotEmpty)
                 ListTile(
                   title: Text(
-                    I18n.of(context).removeAllOtherDevices,
+                    I18n.tr(context).removeAllOtherDevices,
                     style: TextStyle(color: Colors.red),
                   ),
                   trailing: Icon(Icons.delete_outline),
@@ -151,7 +151,7 @@ class UserDeviceListItem extends StatelessWidget {
       itemBuilder: (BuildContext context) => [
         PopupMenuItem<String>(
           value: "remove",
-          child: Text(I18n.of(context).removeDevice,
+          child: Text(I18n.tr(context).removeDevice,
               style: TextStyle(color: Colors.red)),
         ),
       ],
@@ -161,7 +161,7 @@ class UserDeviceListItem extends StatelessWidget {
           children: <Widget>[
             Text((userDevice.displayName?.isNotEmpty ?? false)
                 ? userDevice.displayName
-                : I18n.of(context).unknownDevice),
+                : I18n.tr(context).unknownDevice),
             Spacer(),
             Text(userDevice.lastSeenTs.localizedTimeShort(context)),
           ],
@@ -169,8 +169,8 @@ class UserDeviceListItem extends StatelessWidget {
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text("${I18n.of(context).id}: ${userDevice.deviceId}"),
-            Text("${I18n.of(context).lastSeenIp}: ${userDevice.lastSeenIp}"),
+            Text("${I18n.tr(context).id}: ${userDevice.deviceId}"),
+            Text("${I18n.tr(context).lastSeenIp}: ${userDevice.lastSeenIp}"),
           ],
         ),
       ),

@@ -15,27 +15,27 @@ extension LocalizedBody on Event {
   String getLocalizedBody(BuildContext context,
       {bool withSenderNamePrefix = false, bool hideQuotes = false}) {
     if (this.redacted) {
-      return I18n.of(context)
+      return I18n.tr(context)
           .removedBy(redactedBecause.sender.calcDisplayname());
     }
     String localizedBody = body;
     final String senderName = this.sender.calcDisplayname();
     switch (this.type) {
       case EventTypes.Sticker:
-        localizedBody = I18n.of(context).sentASticker(senderName);
+        localizedBody = I18n.tr(context).sentASticker(senderName);
         break;
       case EventTypes.Redaction:
-        localizedBody = I18n.of(context).redactedAnEvent(senderName);
+        localizedBody = I18n.tr(context).redactedAnEvent(senderName);
         break;
       case EventTypes.RoomAliases:
-        localizedBody = I18n.of(context).changedTheRoomAliases(senderName);
+        localizedBody = I18n.tr(context).changedTheRoomAliases(senderName);
         break;
       case EventTypes.RoomCanonicalAlias:
         localizedBody =
-            I18n.of(context).changedTheRoomInvitationLink(senderName);
+            I18n.tr(context).changedTheRoomInvitationLink(senderName);
         break;
       case EventTypes.RoomCreate:
-        localizedBody = I18n.of(context).createdTheChat(senderName);
+        localizedBody = I18n.tr(context).createdTheChat(senderName);
         break;
       case EventTypes.RoomJoinRules:
         JoinRules joinRules = JoinRules.values.firstWhere(
@@ -44,9 +44,9 @@ extension LocalizedBody on Event {
                 content["join_rule"],
             orElse: () => null);
         if (joinRules == null) {
-          localizedBody = I18n.of(context).changedTheJoinRules(senderName);
+          localizedBody = I18n.tr(context).changedTheJoinRules(senderName);
         } else {
-          localizedBody = I18n.of(context).changedTheJoinRulesTo(
+          localizedBody = I18n.tr(context).changedTheJoinRulesTo(
               senderName, joinRules.getLocalizedString(context));
         }
         break;
@@ -61,36 +61,36 @@ extension LocalizedBody on Event {
                 : "";
         if (newMembership != oldMembership) {
           if (oldMembership == "invite" && newMembership == "join") {
-            text = I18n.of(context).acceptedTheInvitation(targetName);
+            text = I18n.tr(context).acceptedTheInvitation(targetName);
           } else if (oldMembership == "invite" && newMembership == "leave") {
             if (this.stateKey == this.senderId) {
-              text = I18n.of(context).rejectedTheInvitation(targetName);
+              text = I18n.tr(context).rejectedTheInvitation(targetName);
             } else {
-              text = I18n.of(context)
+              text = I18n.tr(context)
                   .hasWithdrawnTheInvitationFor(senderName, targetName);
             }
           } else if (oldMembership == "leave" && newMembership == "join") {
-            text = I18n.of(context).joinedTheChat(targetName);
+            text = I18n.tr(context).joinedTheChat(targetName);
           } else if (oldMembership == "join" && newMembership == "ban") {
-            text = I18n.of(context).kickedAndBanned(senderName, targetName);
+            text = I18n.tr(context).kickedAndBanned(senderName, targetName);
           } else if (oldMembership == "join" &&
               newMembership == "leave" &&
               this.stateKey != this.senderId) {
-            text = I18n.of(context).kicked(senderName, targetName);
+            text = I18n.tr(context).kicked(senderName, targetName);
           } else if (oldMembership == "join" &&
               newMembership == "leave" &&
               this.stateKey == this.senderId) {
-            text = I18n.of(context).userLeftTheChat(targetName);
+            text = I18n.tr(context).userLeftTheChat(targetName);
           } else if (oldMembership == "invite" && newMembership == "ban") {
-            text = I18n.of(context).bannedUser(senderName, targetName);
+            text = I18n.tr(context).bannedUser(senderName, targetName);
           } else if (oldMembership == "leave" && newMembership == "ban") {
-            text = I18n.of(context).bannedUser(senderName, targetName);
+            text = I18n.tr(context).bannedUser(senderName, targetName);
           } else if (oldMembership == "ban" && newMembership == "leave") {
-            text = I18n.of(context).unbannedUser(senderName, targetName);
+            text = I18n.tr(context).unbannedUser(senderName, targetName);
           } else if (newMembership == "invite") {
-            text = I18n.of(context).invitedUser(senderName, targetName);
+            text = I18n.tr(context).invitedUser(senderName, targetName);
           } else if (newMembership == "join") {
-            text = I18n.of(context).joinedTheChat(targetName);
+            text = I18n.tr(context).joinedTheChat(targetName);
           }
         } else if (newMembership == "join") {
           final String newAvatar = this.content["avatar_url"] ?? "";
@@ -107,29 +107,29 @@ extension LocalizedBody on Event {
 
           // Has the user avatar changed?
           if (newAvatar != oldAvatar) {
-            text = I18n.of(context).changedTheProfileAvatar(targetName);
+            text = I18n.tr(context).changedTheProfileAvatar(targetName);
           }
           // Has the user avatar changed?
           else if (newDisplayname != oldDisplayname) {
-            text = I18n.of(context)
+            text = I18n.tr(context)
                 .changedTheDisplaynameTo(targetName, newDisplayname);
           }
         }
         localizedBody = text;
         break;
       case EventTypes.RoomPowerLevels:
-        localizedBody = I18n.of(context).changedTheChatPermissions(senderName);
+        localizedBody = I18n.tr(context).changedTheChatPermissions(senderName);
         break;
       case EventTypes.RoomName:
         localizedBody =
-            I18n.of(context).changedTheChatNameTo(senderName, content["name"]);
+            I18n.tr(context).changedTheChatNameTo(senderName, content["name"]);
         break;
       case EventTypes.RoomTopic:
-        localizedBody = I18n.of(context)
+        localizedBody = I18n.tr(context)
             .changedTheChatDescriptionTo(senderName, content["topic"]);
         break;
       case EventTypes.RoomAvatar:
-        localizedBody = I18n.of(context).changedTheChatAvatar(senderName);
+        localizedBody = I18n.tr(context).changedTheChatAvatar(senderName);
         break;
       case EventTypes.GuestAccess:
         GuestAccess guestAccess = GuestAccess.values.firstWhere(
@@ -139,9 +139,9 @@ extension LocalizedBody on Event {
             orElse: () => null);
         if (guestAccess == null) {
           localizedBody =
-              I18n.of(context).changedTheGuestAccessRules(senderName);
+              I18n.tr(context).changedTheGuestAccessRules(senderName);
         } else {
-          localizedBody = I18n.of(context).changedTheGuestAccessRulesTo(
+          localizedBody = I18n.tr(context).changedTheGuestAccessRulesTo(
               senderName, guestAccess.getLocalizedString(context));
         }
         break;
@@ -154,48 +154,48 @@ extension LocalizedBody on Event {
                 orElse: () => null);
         if (historyVisibility == null) {
           localizedBody =
-              I18n.of(context).changedTheHistoryVisibility(senderName);
+              I18n.tr(context).changedTheHistoryVisibility(senderName);
         } else {
-          localizedBody = I18n.of(context).changedTheHistoryVisibilityTo(
+          localizedBody = I18n.tr(context).changedTheHistoryVisibilityTo(
               senderName, historyVisibility.getLocalizedString(context));
         }
         break;
       case EventTypes.Encryption:
         localizedBody =
-            I18n.of(context).activatedEndToEndEncryption(senderName);
+            I18n.tr(context).activatedEndToEndEncryption(senderName);
         if (!room.client.encryptionEnabled) {
-          localizedBody += ". " + I18n.of(context).needPantalaimonWarning;
+          localizedBody += ". " + I18n.tr(context).needPantalaimonWarning;
         }
         break;
       case EventTypes.Encrypted:
-        localizedBody = I18n.of(context).couldNotDecryptMessage;
+        localizedBody = I18n.tr(context).couldNotDecryptMessage;
         break;
       case EventTypes.Message:
         switch (this.messageType) {
           case MessageTypes.Image:
-            localizedBody = I18n.of(context).sentAPicture(senderName);
+            localizedBody = I18n.tr(context).sentAPicture(senderName);
             break;
           case MessageTypes.File:
-            localizedBody = I18n.of(context).sentAFile(senderName);
+            localizedBody = I18n.tr(context).sentAFile(senderName);
             break;
           case MessageTypes.Audio:
-            localizedBody = I18n.of(context).sentAnAudio(senderName);
+            localizedBody = I18n.tr(context).sentAnAudio(senderName);
             break;
           case MessageTypes.Video:
-            localizedBody = I18n.of(context).sentAVideo(senderName);
+            localizedBody = I18n.tr(context).sentAVideo(senderName);
             break;
           case MessageTypes.Location:
-            localizedBody = I18n.of(context).sharedTheLocation(senderName);
+            localizedBody = I18n.tr(context).sharedTheLocation(senderName);
             break;
           case MessageTypes.Sticker:
-            localizedBody = I18n.of(context).sentASticker(senderName);
+            localizedBody = I18n.tr(context).sentASticker(senderName);
             break;
           case MessageTypes.Emote:
             localizedBody = "* $body";
             break;
           case MessageTypes.BadEncrypted:
             localizedBody =
-                "🔒 " + I18n.of(context).couldNotDecryptMessage + ": " + body;
+                "🔒 " + I18n.tr(context).couldNotDecryptMessage + ": " + body;
             break;
           case MessageTypes.Text:
           case MessageTypes.Notice:
@@ -206,7 +206,7 @@ extension LocalizedBody on Event {
         }
         break;
       default:
-        localizedBody = I18n.of(context).unknownEvent(this.typeKey);
+        localizedBody = I18n.tr(context).unknownEvent(this.typeKey);
     }
 
     // Hide quotes
@@ -221,7 +221,7 @@ extension LocalizedBody on Event {
         this.type == EventTypes.Message &&
         textOnlyMessageTypes.contains(this.messageType)) {
       final String senderNameOrYou = this.senderId == room.client.userID
-          ? I18n.of(context).you
+          ? I18n.tr(context).you
           : senderName;
       localizedBody = "$senderNameOrYou: $localizedBody";
     }

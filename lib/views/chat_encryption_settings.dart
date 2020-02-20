@@ -53,25 +53,25 @@ class _ChatEncryptionSettingsState extends State<ChatEncryptionSettings> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(I18n.of(context).end2endEncryptionSettings),
+        title: Text(I18n.tr(context).end2endEncryptionSettings),
       ),
       body: Column(
         children: <Widget>[
           ListTile(
-            title: Text(I18n.of(context).encryptionAlgorithm),
-            subtitle: Text(room.encryptionAlgorithm ?? I18n.of(context).none),
+            title: Text(I18n.tr(context).encryptionAlgorithm),
+            subtitle: Text(room.encryptionAlgorithm ?? I18n.tr(context).none),
             trailing: Icon(room.encrypted ? Icons.lock : Icons.lock_open,
                 color: room.encrypted ? Colors.green : Colors.red),
             onTap: () async {
               if (room.encrypted) return;
               if (!room.client.encryptionEnabled) {
-                Toast.show(I18n.of(context).needPantalaimonWarning, context,
+                Toast.show(I18n.tr(context).needPantalaimonWarning, context,
                     duration: 8);
                 return;
               }
               if (await SimpleDialogs(context).askConfirmation(
-                      titleText: I18n.of(context).enableEncryptionWarning,
-                      confirmText: I18n.of(context).yes) ==
+                      titleText: I18n.tr(context).enableEncryptionWarning,
+                      confirmText: I18n.tr(context).yes) ==
                   true) {
                 await Matrix.of(context).tryRequestWithLoadingDialog(
                   room.enableEncryption(),
@@ -83,15 +83,15 @@ class _ChatEncryptionSettingsState extends State<ChatEncryptionSettings> {
             trailing: Icon(Icons.info),
             subtitle: Text(
               room.client.encryptionEnabled
-                  ? I18n.of(context).warningEncryptionInBeta
-                  : I18n.of(context).needPantalaimonWarning,
+                  ? I18n.tr(context).warningEncryptionInBeta
+                  : I18n.tr(context).needPantalaimonWarning,
             ),
           ),
           Divider(height: 1),
           if (room.encrypted)
             ListTile(
               title: Text(
-                "${I18n.of(context).participatingUserDevices}:",
+                "${I18n.tr(context).participatingUserDevices}:",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                 ),
@@ -104,7 +104,7 @@ class _ChatEncryptionSettingsState extends State<ChatEncryptionSettings> {
               builder: (BuildContext context, snapshot) {
                 if (snapshot.hasError) {
                   return Center(
-                    child: Text(I18n.of(context).oopsSomethingWentWrong +
+                    child: Text(I18n.tr(context).oopsSomethingWentWrong +
                         ": " +
                         snapshot.error.toString()),
                   );

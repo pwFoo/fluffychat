@@ -22,7 +22,7 @@ class SimpleDialogs {
     await showDialog(
       context: context,
       builder: (c) => AlertDialog(
-        title: Text(titleText ?? I18n.of(context).enterAUsername),
+        title: Text(titleText ?? I18n.tr(context).enterAUsername),
         content: TextField(
           controller: controller,
           autofocus: true,
@@ -48,14 +48,14 @@ class SimpleDialogs {
           FlatButton(
             child: Text(
                 cancelText?.toUpperCase() ??
-                    I18n.of(context).close.toUpperCase(),
+                    I18n.tr(context).close.toUpperCase(),
                 style: TextStyle(color: Colors.blueGrey)),
             onPressed: () => Navigator.of(context).pop(),
           ),
           FlatButton(
             child: Text(
               confirmText?.toUpperCase() ??
-                  I18n.of(context).confirm.toUpperCase(),
+                  I18n.tr(context).confirm.toUpperCase(),
             ),
             onPressed: () {
               input = controller.text;
@@ -77,19 +77,19 @@ class SimpleDialogs {
     await showDialog(
       context: context,
       builder: (c) => AlertDialog(
-        title: Text(titleText ?? I18n.of(context).areYouSure),
+        title: Text(titleText ?? I18n.tr(context).areYouSure),
         actions: <Widget>[
           FlatButton(
             child: Text(
                 cancelText?.toUpperCase() ??
-                    I18n.of(context).close.toUpperCase(),
+                    I18n.tr(context).close.toUpperCase(),
                 style: TextStyle(color: Colors.blueGrey)),
             onPressed: () => Navigator.of(context).pop(),
           ),
           FlatButton(
             child: Text(
               confirmText?.toUpperCase() ??
-                  I18n.of(context).confirm.toUpperCase(),
+                  I18n.tr(context).confirm.toUpperCase(),
             ),
             onPressed: () {
               confirmed = true;

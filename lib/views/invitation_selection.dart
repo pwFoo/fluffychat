@@ -53,7 +53,7 @@ class _InvitationSelectionState extends State<InvitationSelection> {
     );
     if (success != false) {
       Toast.show(
-        I18n.of(context).contactHasBeenInvitedToTheGroup,
+        I18n.tr(context).contactHasBeenInvitedToTheGroup,
         context,
         duration: Toast.LENGTH_LONG,
       );
@@ -114,14 +114,14 @@ class _InvitationSelectionState extends State<InvitationSelection> {
   @override
   Widget build(BuildContext context) {
     final String groupName = widget.room.name?.isEmpty ?? false
-        ? I18n.of(context).group
+        ? I18n.tr(context).group
         : widget.room.name;
     return AdaptivePageLayout(
       primaryPage: FocusPage.SECOND,
       firstScaffold: ChatList(activeChat: widget.room.id),
       secondScaffold: Scaffold(
           appBar: AppBar(
-            title: Text(I18n.of(context).inviteContact),
+            title: Text(I18n.tr(context).inviteContact),
             bottom: PreferredSize(
               preferredSize: Size.fromHeight(68),
               child: Padding(
@@ -137,8 +137,8 @@ class _InvitationSelectionState extends State<InvitationSelection> {
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     prefixText: "@",
-                    hintText: I18n.of(context).username,
-                    labelText: I18n.of(context).inviteContactToGroup(groupName),
+                    hintText: I18n.tr(context).username,
+                    labelText: I18n.tr(context).inviteContactToGroup(groupName),
                     suffixIcon: loading
                         ? Container(
                             padding: const EdgeInsets.all(8.0),

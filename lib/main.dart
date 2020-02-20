@@ -1,7 +1,9 @@
 import 'package:famedlysdk/famedlysdk.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:universal_html/prefer_universal/html.dart' as html;
 
 import 'i18n/i18n.dart';
 import 'views/sign_up.dart';
@@ -28,14 +30,18 @@ class App extends StatelessWidget {
               theme: ThemeSwitcherWidget.of(context).themeData,
               localizationsDelegates: [
                 AppLocalizationsDelegate(),
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
                 GlobalCupertinoLocalizations.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
               ],
               supportedLocales: [
                 const Locale('en'), // English
                 const Locale('de'), // German
               ],
+              locale: kIsWeb
+                  ? Locale(html.window.navigator.language.split("-").first)
+                  : null,
               home: FutureBuilder<LoginState>(
                 future:
                     Matrix.of(context).client.onLoginStateChanged.stream.first,

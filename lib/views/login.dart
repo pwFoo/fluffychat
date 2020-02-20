@@ -28,12 +28,12 @@ class _LoginState extends State<Login> {
   void login(BuildContext context) async {
     MatrixState matrix = Matrix.of(context);
     if (usernameController.text.isEmpty) {
-      setState(() => usernameError = I18n.of(context).pleaseEnterYourUsername);
+      setState(() => usernameError = I18n.tr(context).pleaseEnterYourUsername);
     } else {
       setState(() => usernameError = null);
     }
     if (passwordController.text.isEmpty) {
-      setState(() => passwordError = I18n.of(context).pleaseEnterYourPassword);
+      setState(() => passwordError = I18n.tr(context).pleaseEnterYourPassword);
     } else {
       setState(() => passwordError = null);
     }
@@ -53,12 +53,12 @@ class _LoginState extends State<Login> {
       setState(() => loading = true);
       if (!await matrix.client.checkServer(homeserver)) {
         setState(
-            () => serverError = I18n.of(context).homeserverIsNotCompatible);
+            () => serverError = I18n.tr(context).homeserverIsNotCompatible);
 
         return setState(() => loading = false);
       }
     } catch (exception) {
-      setState(() => serverError = I18n.of(context).connectionAttemptFailed);
+      setState(() => serverError = I18n.tr(context).connectionAttemptFailed);
       return setState(() => loading = false);
     }
     try {
@@ -93,6 +93,7 @@ class _LoginState extends State<Login> {
       appBar: AppBar(
         leading: loading ? Container() : null,
         title: TextField(
+          key: Key("serverField"),
           autocorrect: false,
           controller: serverController,
           decoration: InputDecoration(
@@ -124,14 +125,15 @@ class _LoginState extends State<Login> {
                   color: Theme.of(context).primaryColor),
             ),
             title: TextField(
+              key: Key("usernameField"),
               readOnly: loading,
               autocorrect: false,
               controller: usernameController,
               decoration: InputDecoration(
                   hintText:
-                      "@${I18n.of(context).username.toLowerCase()}:domain",
+                      "@${I18n.tr(context).username.toLowerCase()}:domain",
                   errorText: usernameError,
-                  labelText: I18n.of(context).username),
+                  labelText: I18n.tr(context).username),
             ),
           ),
           ListTile(
@@ -142,6 +144,7 @@ class _LoginState extends State<Login> {
               child: Icon(Icons.lock, color: Theme.of(context).primaryColor),
             ),
             title: TextField(
+              key: Key("passwordField"),
               readOnly: loading,
               autocorrect: false,
               controller: passwordController,
@@ -156,7 +159,7 @@ class _LoginState extends State<Login> {
                     onPressed: () =>
                         setState(() => showPassword = !showPassword),
                   ),
-                  labelText: I18n.of(context).password),
+                  labelText: I18n.tr(context).password),
             ),
           ),
           SizedBox(height: 20),
@@ -164,6 +167,7 @@ class _LoginState extends State<Login> {
             height: 50,
             padding: EdgeInsets.symmetric(horizontal: 12),
             child: RaisedButton(
+              key: Key("loginButton"),
               elevation: 7,
               color: Theme.of(context).primaryColor,
               shape: RoundedRectangleBorder(
@@ -172,7 +176,7 @@ class _LoginState extends State<Login> {
               child: loading
                   ? CircularProgressIndicator()
                   : Text(
-                      I18n.of(context).login.toUpperCase(),
+                      I18n.tr(context).login.toUpperCase(),
                       style: TextStyle(color: Colors.white, fontSize: 16),
                     ),
               onPressed: () => loading ? null : login(context),

@@ -120,14 +120,14 @@ class _ChatState extends State<_Chat> {
           r.user.id == room.client.userID ||
           r.user.id == timeline.events.first.senderId);
       if (lastReceipts.length == 1) {
-        seenByText = I18n.of(context)
+        seenByText = I18n.tr(context)
             .seenByUser(lastReceipts.first.user.calcDisplayname());
       } else if (lastReceipts.length == 2) {
-        seenByText = seenByText = I18n.of(context).seenByUserAndUser(
+        seenByText = seenByText = I18n.tr(context).seenByUserAndUser(
             lastReceipts.first.user.calcDisplayname(),
             lastReceipts[1].user.calcDisplayname());
       } else if (lastReceipts.length > 2) {
-        seenByText = I18n.of(context).seenByUserAndCountOthers(
+        seenByText = I18n.tr(context).seenByUserAndCountOthers(
             lastReceipts.first.user.calcDisplayname(),
             (lastReceipts.length - 1).toString());
       }
@@ -174,7 +174,7 @@ class _ChatState extends State<_Chat> {
 
   void sendFileAction(BuildContext context) async {
     if (kIsWeb) {
-      return Toast.show(I18n.of(context).notSupportedInWeb, context);
+      return Toast.show(I18n.tr(context).notSupportedInWeb, context);
     }
     File file = await FilePicker.getFile();
     if (file == null) return;
@@ -187,7 +187,7 @@ class _ChatState extends State<_Chat> {
 
   void sendImageAction(BuildContext context) async {
     if (kIsWeb) {
-      return Toast.show(I18n.of(context).notSupportedInWeb, context);
+      return Toast.show(I18n.tr(context).notSupportedInWeb, context);
     }
     File file = await ImagePicker.pickImage(
         source: ImageSource.gallery,
@@ -204,7 +204,7 @@ class _ChatState extends State<_Chat> {
 
   void openCameraAction(BuildContext context) async {
     if (kIsWeb) {
-      return Toast.show(I18n.of(context).notSupportedInWeb, context);
+      return Toast.show(I18n.tr(context).notSupportedInWeb, context);
     }
     File file = await ImagePicker.pickImage(
         source: ImageSource.camera,
@@ -235,8 +235,8 @@ class _ChatState extends State<_Chat> {
 
   void redactEventsAction(BuildContext context) async {
     bool confirmed = await SimpleDialogs(context).askConfirmation(
-      titleText: I18n.of(context).messageWillBeRemovedWarning,
-      confirmText: I18n.of(context).remove,
+      titleText: I18n.tr(context).messageWillBeRemovedWarning,
+      confirmText: I18n.tr(context).remove,
     );
     if (!confirmed) return;
     for (Event event in selectedEvents) {
@@ -287,10 +287,10 @@ class _ChatState extends State<_Chat> {
     if (room == null) {
       return Scaffold(
         appBar: AppBar(
-          title: Text(I18n.of(context).oopsSomethingWentWrong),
+          title: Text(I18n.tr(context).oopsSomethingWentWrong),
         ),
         body: Center(
-          child: Text(I18n.of(context).youAreNoLongerParticipatingInThisChat),
+          child: Text(I18n.tr(context).youAreNoLongerParticipatingInThisChat),
         ),
       );
     }
@@ -305,17 +305,17 @@ class _ChatState extends State<_Chat> {
     typingUsers.removeWhere((User u) => u.id == client.userID);
 
     if (typingUsers.length == 1) {
-      typingText = I18n.of(context).isTyping;
+      typingText = I18n.tr(context).isTyping;
       if (typingUsers.first.id != room.directChatMatrixID) {
         typingText =
-            I18n.of(context).userIsTyping(typingUsers.first.calcDisplayname());
+            I18n.tr(context).userIsTyping(typingUsers.first.calcDisplayname());
       }
     } else if (typingUsers.length == 2) {
-      typingText = I18n.of(context).userAndUserAreTyping(
+      typingText = I18n.tr(context).userAndUserAreTyping(
           typingUsers.first.calcDisplayname(),
           typingUsers[1].calcDisplayname());
     } else if (typingUsers.length > 2) {
-      typingText = I18n.of(context).userAndOthersAreTyping(
+      typingText = I18n.tr(context).userAndOthersAreTyping(
           typingUsers.first.calcDisplayname(),
           (typingUsers.length - 1).toString());
     }
@@ -358,7 +358,7 @@ class _ChatState extends State<_Chat> {
                   ),
                 ],
               )
-            : Text(I18n.of(context)
+            : Text(I18n.tr(context)
                 .numberSelected(selectedEvents.length.toString())),
         actions: selectMode
             ? <Widget>[
@@ -511,7 +511,7 @@ class _ChatState extends State<_Chat> {
                                       child: Row(
                                         children: <Widget>[
                                           Icon(Icons.keyboard_arrow_left),
-                                          Text(I18n.of(context).forward),
+                                          Text(I18n.tr(context).forward),
                                         ],
                                       ),
                                     ),
@@ -524,8 +524,9 @@ class _ChatState extends State<_Chat> {
                                                 onPressed: () => replyAction(),
                                                 child: Row(
                                                   children: <Widget>[
-                                                    Text(
-                                                        I18n.of(context).reply),
+                                                    Text(FluffychatLocalizations
+                                                            .of(context)
+                                                        .reply),
                                                     Icon(Icons
                                                         .keyboard_arrow_right),
                                                   ],
@@ -539,7 +540,8 @@ class _ChatState extends State<_Chat> {
                                                     sendAgainAction(),
                                                 child: Row(
                                                   children: <Widget>[
-                                                    Text(I18n.of(context)
+                                                    Text(FluffychatLocalizations
+                                                            .of(context)
                                                         .tryToSendAgain),
                                                     SizedBox(width: 4),
                                                     Icon(Icons.send, size: 16),
@@ -575,7 +577,7 @@ class _ChatState extends State<_Chat> {
                                                   child: Icon(Icons.attachment),
                                                 ),
                                                 title: Text(
-                                                    I18n.of(context).sendFile),
+                                                    I18n.tr(context).sendFile),
                                                 contentPadding:
                                                     EdgeInsets.all(0),
                                               ),
@@ -589,7 +591,7 @@ class _ChatState extends State<_Chat> {
                                                   child: Icon(Icons.image),
                                                 ),
                                                 title: Text(
-                                                    I18n.of(context).sendImage),
+                                                    I18n.tr(context).sendImage),
                                                 contentPadding:
                                                     EdgeInsets.all(0),
                                               ),
@@ -603,7 +605,7 @@ class _ChatState extends State<_Chat> {
                                                   foregroundColor: Colors.white,
                                                   child: Icon(Icons.camera_alt),
                                                 ),
-                                                title: Text(I18n.of(context)
+                                                title: Text(I18n.tr(context)
                                                     .openCamera),
                                                 contentPadding:
                                                     EdgeInsets.all(0),
@@ -630,7 +632,7 @@ class _ChatState extends State<_Chat> {
                                         controller: sendController,
                                         decoration: InputDecoration(
                                           hintText:
-                                              I18n.of(context).writeAMessage,
+                                              I18n.tr(context).writeAMessage,
                                           border: InputBorder.none,
                                           prefixIcon:
                                               sendController.text.isEmpty

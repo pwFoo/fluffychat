@@ -32,7 +32,9 @@ class ChatListItem extends StatelessWidget {
       }
 
       if (room.membership == Membership.ban) {
-        Toast.show(I18n.of(context).youHaveBeenBannedFromThisChat, context,
+        Toast.show(
+            I18n.tr(context).youHaveBeenBannedFromThisChat,
+            context,
             duration: 5);
         return;
       }
@@ -41,16 +43,19 @@ class ChatListItem extends StatelessWidget {
         await showDialog(
           context: context,
           builder: (BuildContext context) => AlertDialog(
-            title: Text(I18n.of(context).archivedRoom),
-            content: Text(I18n.of(context).thisRoomHasBeenArchived),
+            title: Text(I18n.tr(context).archivedRoom),
+            content: Text(
+                I18n.tr(context).thisRoomHasBeenArchived),
             actions: <Widget>[
               FlatButton(
-                child: Text(I18n.of(context).close.toUpperCase(),
+                child: Text(
+                    I18n.tr(context).close.toUpperCase(),
                     style: TextStyle(color: Colors.blueGrey)),
                 onPressed: () => Navigator.of(context).pop(),
               ),
               FlatButton(
-                child: Text(I18n.of(context).delete.toUpperCase(),
+                child: Text(
+                    I18n.tr(context).delete.toUpperCase(),
                     style: TextStyle(color: Colors.red)),
                 onPressed: () async {
                   await archiveAction(context);
@@ -58,7 +63,8 @@ class ChatListItem extends StatelessWidget {
                 },
               ),
               FlatButton(
-                child: Text(I18n.of(context).rejoin.toUpperCase(),
+                child: Text(
+                    I18n.tr(context).rejoin.toUpperCase(),
                     style: TextStyle(color: Colors.blue)),
                 onPressed: () async {
                   await Matrix.of(context)
@@ -115,14 +121,14 @@ class ChatListItem extends StatelessWidget {
       secondaryActions: <Widget>[
         if ([Membership.join, Membership.invite].contains(room.membership))
           IconSlideAction(
-            caption: I18n.of(context).leave,
+            caption: I18n.tr(context).leave,
             color: Colors.red,
             icon: Icons.archive,
             onTap: () => archiveAction(context),
           ),
         if ([Membership.leave, Membership.ban].contains(room.membership))
           IconSlideAction(
-            caption: I18n.of(context).delete,
+            caption: I18n.tr(context).delete,
             color: Colors.red,
             icon: Icons.delete_forever,
             onTap: () => archiveAction(context),
@@ -170,7 +176,8 @@ class ChatListItem extends StatelessWidget {
               Expanded(
                 child: room.membership == Membership.invite
                     ? Text(
-                        I18n.of(context).youAreInvitedToThisChat,
+                        I18n.tr(context)
+                            .youAreInvitedToThisChat,
                         style: TextStyle(
                           color: Theme.of(context).primaryColor,
                         ),

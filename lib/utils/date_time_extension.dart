@@ -34,7 +34,7 @@ extension DateTimeExtension on DateTime {
   /// Returns a simple time String.
   /// TODO: Add localization
   String localizedTimeOfDay(BuildContext context) {
-    return I18n.of(context).timeOfDay(_z(this.hour % 12), _z(this.hour),
+    return I18n.tr(context).timeOfDay(_z(this.hour % 12), _z(this.hour),
         _z(this.minute), this.hour > 11 ? 'pm' : 'am');
   }
 
@@ -57,26 +57,26 @@ extension DateTimeExtension on DateTime {
     } else if (sameWeek) {
       switch (this.weekday) {
         case 1:
-          return I18n.of(context).monday;
+          return I18n.tr(context).monday;
         case 2:
-          return I18n.of(context).tuesday;
+          return I18n.tr(context).tuesday;
         case 3:
-          return I18n.of(context).wednesday;
+          return I18n.tr(context).wednesday;
         case 4:
-          return I18n.of(context).thursday;
+          return I18n.tr(context).thursday;
         case 5:
-          return I18n.of(context).friday;
+          return I18n.tr(context).friday;
         case 6:
-          return I18n.of(context).saturday;
+          return I18n.tr(context).saturday;
         case 7:
-          return I18n.of(context).sunday;
+          return I18n.tr(context).sunday;
       }
     } else if (sameYear) {
-      return I18n.of(context).dateWithoutYear(
+      return I18n.tr(context).dateWithoutYear(
           this.month.toString().padLeft(2, '0'),
           this.day.toString().padLeft(2, '0'));
     }
-    return I18n.of(context).dateWithYear(
+    return I18n.tr(context).dateWithYear(
         this.year.toString(),
         this.month.toString().padLeft(2, '0'),
         this.day.toString().padLeft(2, '0'));
@@ -93,7 +93,7 @@ extension DateTimeExtension on DateTime {
     bool sameDay = sameYear && now.month == this.month && now.day == this.day;
 
     if (sameDay) return localizedTimeOfDay(context);
-    return I18n.of(context).dateAndTimeOfDay(
+    return I18n.tr(context).dateAndTimeOfDay(
         localizedTimeShort(context), localizedTimeOfDay(context));
   }
 

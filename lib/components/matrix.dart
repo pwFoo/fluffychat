@@ -104,7 +104,7 @@ class MatrixState extends State<Matrix> {
           children: <Widget>[
             CircularProgressIndicator(),
             SizedBox(width: 16),
-            Text(I18n.of(context).loadingPleaseWait),
+            Text(I18n.tr(context).loadingPleaseWait),
           ],
         ),
       ),
@@ -140,7 +140,7 @@ class MatrixState extends State<Matrix> {
     final String token = await _firebaseMessaging.getToken();
     if (token?.isEmpty ?? true) {
       return Toast.show(
-        I18n.of(context).noGoogleServicesWarning,
+        I18n.tr(context).noGoogleServicesWarning,
         context,
         duration: 10,
       );
@@ -233,9 +233,9 @@ class MatrixState extends State<Matrix> {
 
           // Calculate title
           final String title = unread > 1
-              ? I18n.of(context).unreadMessagesInChats(
+              ? I18n.tr(context).unreadMessagesInChats(
                   unreadEvents.toString(), unread.toString())
-              : I18n.of(context).unreadMessages(unreadEvents.toString());
+              : I18n.tr(context).unreadMessages(unreadEvents.toString());
 
           // Calculate the body
           final String body = event.getLocalizedBody(context,
@@ -273,7 +273,7 @@ class MatrixState extends State<Matrix> {
               ),
               importance: Importance.Max,
               priority: Priority.High,
-              ticker: I18n.of(context).newMessageInFluffyChat);
+              ticker: I18n.tr(context).newMessageInFluffyChat);
           var iOSPlatformChannelSpecifics = IOSNotificationDetails();
           var platformChannelSpecifics = NotificationDetails(
               androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
