@@ -14,11 +14,12 @@ code_analyze:
   script:
     - flutter analyze
 
-test:
+coverage:
   stage: coverage
-  dependencies: []
+  coverage: '/^\s+lines.+: (\d+.\d*%)/'
   script:
     - flutter test
+    - genhtml -o coverage coverage/lcov.info || exit 0
 
 build_web:
   stage: coverage
