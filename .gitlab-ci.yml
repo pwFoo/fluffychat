@@ -18,7 +18,7 @@ coverage:
   stage: coverage
   coverage: '/^\s+lines.+: (\d+.\d*%)/'
   script:
-    - flutter test
+    - flutter test --coverage
     - genhtml -o coverage coverage/lcov.info || exit 0
 
 build_web:
