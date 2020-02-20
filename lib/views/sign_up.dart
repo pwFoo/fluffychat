@@ -94,6 +94,7 @@ class _SignUpState extends State<SignUp> {
     return Scaffold(
       appBar: AppBar(
         title: TextField(
+          key: Key("serverField"),
           autocorrect: false,
           controller: serverController,
           decoration: InputDecoration(
@@ -149,6 +150,7 @@ class _SignUpState extends State<SignUp> {
                 ),
               ),
               title: TextField(
+                key: Key("usernameField"),
                 autocorrect: false,
                 controller: usernameController,
                 onSubmitted: (s) => signUpAction(context),
@@ -163,6 +165,7 @@ class _SignUpState extends State<SignUp> {
               height: 50,
               padding: EdgeInsets.symmetric(horizontal: 12),
               child: RaisedButton(
+                key: Key("signUpButton"),
                 elevation: 7,
                 color: Theme.of(context).primaryColor,
                 shape: RoundedRectangleBorder(
@@ -179,6 +182,7 @@ class _SignUpState extends State<SignUp> {
             ),
             Center(
               child: FlatButton(
+                key: Key("alreadyHaveAnAccountButton"),
                 child: Text(
                   I18n.tr(context).alreadyHaveAnAccount,
                   style: TextStyle(

@@ -1,6 +1,4 @@
-import 'package:fluffychat/utils/app_route.dart';
-import 'package:fluffychat/views/chat_list.dart';
-import 'package:fluffychat/views/login.dart';
+import 'package:fluffychat/views/sign_up.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -8,7 +6,7 @@ import 'utils.dart';
 
 void main() {
   /// All Tests related to the Login
-  group("LoginPage", () {
+  group("SignUpPage", () {
     /// Check if all Elements get created
     testWidgets('should get created', (WidgetTester tester) async {
       await tester.runAsync(() async {
@@ -18,7 +16,7 @@ void main() {
 
         await tester.pumpWidget(
           Utils.getWidgetWrapper(
-            Login(),
+            SignUp(),
             observer,
           ),
         );
@@ -28,9 +26,9 @@ void main() {
         expect(find.byKey(Key("serverField")), findsOneWidget); // Server field
         expect(
             find.byKey(Key("usernameField")), findsOneWidget); // Username Input
-        expect(
-            find.byKey(Key("passwordField")), findsOneWidget); // Password Input
-        expect(find.byKey(Key("loginButton")), findsOneWidget); // Login Button
+        expect(find.byKey(Key("signUpButton")), findsOneWidget); // Login Button
+        expect(find.byKey(Key("alreadyHaveAnAccountButton")),
+            findsOneWidget); // alreadyHaveAnAccount Button
 
         /*await Utils.tapItem(tester, Key("loginButton"));
         // FIXME Use better way

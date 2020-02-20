@@ -11,6 +11,18 @@ class Utils {
     debugPrint(tester.allWidgets.toList().join("\n").toString());
   }
 
+  static bool isWidgetInWidgets(WidgetTester tester, Type widget) {
+    debugPrint(tester.allWidgets
+        .toList()
+        .map((e) => e.runtimeType)
+        .join("\n")
+        .toString());
+    return tester.allWidgets
+        .toList()
+        .map((e) => e.runtimeType)
+        .contains(widget);
+  }
+
   static Client get defaultClient {
     Client client = Client("testclient", debug: true);
     client.httpClient = FakeMatrixApi();
