@@ -176,10 +176,6 @@ class _ChatState extends State<_Chat> {
   }
 
   void sendFileAction(BuildContext context) async {
-    if (kIsWeb) {
-      showToast(I18n.of(context).notSupportedInWeb);
-      return;
-    }
     File file = await FilePicker.getFile();
     if (file == null) return;
     await matrix.tryRequestWithLoadingDialog(
@@ -190,10 +186,6 @@ class _ChatState extends State<_Chat> {
   }
 
   void sendImageAction(BuildContext context) async {
-    if (kIsWeb) {
-      showToast(I18n.of(context).notSupportedInWeb);
-      return;
-    }
     File file = await ImagePicker.pickImage(
         source: ImageSource.gallery,
         imageQuality: 50,
@@ -208,10 +200,6 @@ class _ChatState extends State<_Chat> {
   }
 
   void openCameraAction(BuildContext context) async {
-    if (kIsWeb) {
-      showToast(I18n.of(context).notSupportedInWeb);
-      return;
-    }
     File file = await ImagePicker.pickImage(
         source: ImageSource.camera,
         imageQuality: 50,
@@ -590,7 +578,7 @@ class _ChatState extends State<_Chat> {
                                       : Container(),
                                 ]
                               : <Widget>[
-                                  if (!kIsWeb && inputText.isEmpty)
+                                  if (Matrix.isMobile && inputText.isEmpty)
                                     PopupMenuButton<String>(
                                       icon: Icon(Icons.add),
                                       onSelected: (String choice) async {
@@ -669,8 +657,8 @@ class _ChatState extends State<_Chat> {
                                           vertical: 4.0),
                                       child: TextField(
                                         minLines: 1,
-                                        maxLines: kIsWeb ? 1 : 8,
-                                        keyboardType: kIsWeb
+                                        maxLines: !Matrix.isMobile ? 1 : 8,
+                                        keyboardType: !Matrix.isMobile
                                             ? TextInputType.text
                                             : TextInputType.multiline,
                                         onSubmitted: (String text) {
@@ -709,13 +697,13 @@ class _ChatState extends State<_Chat> {
                                       ),
                                     ),
                                   ),
-                                  if (!kIsWeb && inputText.isEmpty)
+                                  if (Matrix.isMobile && inputText.isEmpty)
                                     IconButton(
                                       icon: Icon(Icons.mic),
                                       onPressed: () =>
                                           voiceMessageAction(context),
                                     ),
-                                  if (kIsWeb || inputText.isNotEmpty)
+                                  if (!Matrix.isMobile || inputText.isNotEmpty)
                                     IconButton(
                                       icon: Icon(Icons.send),
                                       onPressed: () => send(),

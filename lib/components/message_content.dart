@@ -7,7 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:link_text/link_text.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:fluffychat/utils/cross_url_launcher.dart';
 import 'package:fluffychat/utils/matrix_file_extension.dart';
 
 import 'matrix.dart';

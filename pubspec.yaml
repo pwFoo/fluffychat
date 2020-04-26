@@ -29,7 +29,7 @@ dependencies:
       url: https://gitlab.com/famedly/famedlysdk.git
       ref: 28dee0e2e3dc2fdde64b29d0a65028b49b4c4dc7
 
-  localstorage: ^3.0.1+4
+  cross_local_storage: ^1.1.1
   bubble: ^1.1.9+1
   file_picker: ^1.4.3+2
   image_picker: ^0.6.2+3
@@ -54,6 +54,7 @@ dependencies:
   open_file: ^3.0.1
   mime_type: ^0.2.7
   flutter_styled_toast: ^1.2.1
+  system: ^0.2.0
 
   intl: ^0.16.0
   intl_translation: ^0.17.9

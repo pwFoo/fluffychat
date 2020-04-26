@@ -143,7 +143,7 @@ class _ChatListState extends State<ChatList> {
   }
 
   void _initReceiveSharingINtent() {
-    if (kIsWeb) return;
+    if (!Matrix.isMobile) return;
 
     // For sharing images coming from outside the app while the app is in the memory
     _intentFileStreamSubscription = ReceiveSharingIntent.getMediaStream()

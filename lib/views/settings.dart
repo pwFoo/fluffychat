@@ -7,7 +7,7 @@ import 'package:fluffychat/views/settings_devices.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:fluffychat/utils/cross_url_launcher.dart';
 
 import 'app_info.dart';
 import 'chat_list.dart';

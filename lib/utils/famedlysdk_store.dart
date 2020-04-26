@@ -1,10 +1,11 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:localstorage/localstorage.dart';
+import 'package:cross_local_storage/cross_local_storage.dart';
 import 'dart:async';
 import 'dart:core';
 import 'package:path/path.dart' as p;
@@ -12,20 +13,23 @@ import 'package:sqflite/sqflite.dart';
 
 class Store extends StoreAPI {
   final Client client;
-  final LocalStorage storage;
+  Future<LocalStorageInterface> storageFuture;
+  LocalStorageInterface storage;
   final FlutterSecureStorage secureStorage;
 
   Store(this.client)
-      : storage = LocalStorage('LocalStorage'),
-        secureStorage = kIsWeb ? null : FlutterSecureStorage() {
+      : storageFuture = LocalStorage.getInstance(),
+        secureStorage = !(Platform.isIOS || Platform.isAndroid)
+            ? null
+            : FlutterSecureStorage() {
     _init();
   }
 
   Future<dynamic> getItem(String key) async {
-    if (kIsWeb) {
-      await storage.ready;
+    if (!(Platform.isIOS || Platform.isAndroid)) {
+      storage = await storageFuture;
       try {
-        return await storage.getItem(key);
+        return await storage.get(key);
       } catch (_) {
         return null;
       }
@@ -38,9 +42,9 @@ class Store extends StoreAPI {
   }
 
   Future<void> setItem(String key, String value) async {
-    if (kIsWeb) {
-      await storage.ready;
-      return await storage.setItem(key, value);
+    if (!(Platform.isIOS || Platform.isAndroid)) {
+      storage = await storageFuture;
+      return await storage.setString(key, value);
     }
     if (value == null) {
       return await secureStorage.delete(key: key);
@@ -89,7 +93,7 @@ class Store extends StoreAPI {
       newMatrixVersions: List<String>.from(credentials["matrixVersions"] ?? []),
       newToken: credentials["token"],
       newUserID: credentials["userID"],
-      newPrevBatch: kIsWeb
+      newPrevBatch: !(Platform.isIOS || Platform.isAndroid)
           ? null
           : (credentials["prev_batch"]?.isEmpty ?? true)
               ? null
@@ -112,7 +116,9 @@ class Store extends StoreAPI {
     return;
   }
 
-  Future<void> clear() => kIsWeb ? storage.clear() : secureStorage.deleteAll();
+  Future<void> clear() => !(Platform.isIOS || Platform.isAndroid)
+      ? storage.clear()
+      : secureStorage.deleteAll();
 }
 
 /// Responsible to store all data persistent and to query objects from the

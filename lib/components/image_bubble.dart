@@ -55,9 +55,9 @@ class _ImageBubbleState extends State<ImageBubble> {
               );
             }
             _getFile().then((MatrixFile file) {
-              setState(() => _file = file);
+              if (mounted) setState(() => _file = file);
             }, onError: (error) {
-              setState(() => _error = error);
+              if (mounted) setState(() => _error = error);
             });
             return Center(
               child: CircularProgressIndicator(),

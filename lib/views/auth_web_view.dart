@@ -2,7 +2,7 @@ import 'package:fluffychat/components/matrix.dart';
 import 'package:fluffychat/i18n/i18n.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:fluffychat/utils/cross_url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class AuthWebView extends StatelessWidget {

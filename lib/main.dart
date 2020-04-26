@@ -34,6 +34,7 @@ class App extends StatelessWidget {
               child: MaterialApp(
                 title: 'FluffyChat',
                 theme: ThemeSwitcherWidget.of(context).themeData,
+                debugShowCheckedModeBanner: kIsWeb || Matrix.isMobile,
                 localizationsDelegates: [
                   AppLocalizationsDelegate(),
                   GlobalMaterialLocalizations.delegate,

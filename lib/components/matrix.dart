@@ -9,9 +9,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
-import 'package:localstorage/localstorage.dart';
+import 'package:cross_local_storage/cross_local_storage.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:fluffychat/utils/cross_url_launcher.dart';
 
 import '../i18n/i18n.dart';
 import '../utils/app_route.dart';
@@ -25,6 +25,8 @@ import 'avatar.dart';
 class Matrix extends StatefulWidget {
   static const String callNamespace = 'chat.fluffy.jitsi_call';
   static const String defaultHomeserver = 'tchncs.de';
+  static bool get isMobile =>
+      kIsWeb ? false : (Platform.isAndroid || Platform.isIOS);
 
   final Widget child;
 
@@ -70,11 +72,10 @@ class MatrixState extends State<Matrix> {
   String jitsiInstance = 'https://meet.jit.si/';
 
   void clean() async {
-    if (!kIsWeb) return;
+    if (Matrix.isMobile) return;
 
-    final LocalStorage storage = LocalStorage('LocalStorage');
-    await storage.ready;
-    await storage.deleteItem(widget.clientName);
+    final LocalStorageInterface storage = await LocalStorage.getInstance();
+    await storage.remove(widget.clientName);
   }
 
   BuildContext _loadingDialogContext;
@@ -325,10 +326,10 @@ class MatrixState extends State<Matrix> {
 
   void _initWithStore() async {
     Future<LoginState> initLoginState = client.onLoginStateChanged.stream.first;
-    client.storeAPI = kIsWeb ? Store(client) : ExtendedStore(client);
+    client.storeAPI = !Matrix.isMobile ? Store(client) : ExtendedStore(client);
     debugPrint(
         "[Store] Store is extended: ${client.storeAPI.extended.toString()}");
-    if (await initLoginState == LoginState.logged && !kIsWeb) {
+    if (await initLoginState == LoginState.logged && Matrix.isMobile) {
       await setupFirebase();
     }
   }
@@ -406,7 +407,7 @@ class MatrixState extends State<Matrix> {
   void initState() {
     if (widget.client == null) {
       debugPrint("[Matrix] Init matrix client");
-      client = Client(widget.clientName, debug: true);
+      client = Client(widget.clientName, debug: false);
       onJitsiCallSub ??= client.onEvent.stream
           .where((e) =>
               e.type == 'timeline' &&

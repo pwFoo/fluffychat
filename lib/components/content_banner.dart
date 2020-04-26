@@ -53,7 +53,8 @@ class ContentBanner extends StatelessWidget {
                           fit: BoxFit.cover,
                           image: AdvancedNetworkImage(
                             src,
-                            useDiskCache: !kIsWeb,
+                            useDiskCache:
+                                Matrix.of(context).client.storeAPI.extended,
                           ),
                         )
                       : Icon(defaultIcon, size: 300)

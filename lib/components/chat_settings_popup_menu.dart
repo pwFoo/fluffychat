@@ -6,7 +6,7 @@ import 'package:fluffychat/utils/app_route.dart';
 import 'package:fluffychat/views/chat_details.dart';
 import 'package:fluffychat/views/chat_list.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:fluffychat/utils/cross_url_launcher.dart';
 
 import 'dialogs/simple_dialogs.dart';
 import 'matrix.dart';

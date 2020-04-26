@@ -3,7 +3,6 @@ import 'package:fluffychat/utils/string_color.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_networkimage/provider.dart';
-
 import 'matrix.dart';
 
 class Avatar extends StatelessWidget {
@@ -42,7 +41,7 @@ class Avatar extends StatelessWidget {
         backgroundImage: mxContent.mxc?.isNotEmpty ?? false
             ? AdvancedNetworkImage(
                 src,
-                useDiskCache: !kIsWeb,
+                useDiskCache: Matrix.of(context).client.storeAPI.extended,
               )
             : null,
         backgroundColor: mxContent.mxc.isEmpty
