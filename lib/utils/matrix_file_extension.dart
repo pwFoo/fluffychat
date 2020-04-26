@@ -31,7 +31,11 @@ extension MatrixFileExtension on MatrixFile {
       file.writeAsBytesSync(bytes);
       await OpenFile.open(file.path);
     } else if (Platform.isLinux) {
-      final filePath = "/home/krille/Downloads/";
+      final directory = Directory('Downloads');
+      if (await directory.exists() == false) {
+        await directory.create();
+      }
+      final filePath = "${directory.path}/";
       final file = File(filePath + path.split("/").last);
       file.writeAsBytesSync(bytes);
       System.invoke('xdg-open $filePath');
