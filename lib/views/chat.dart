@@ -17,7 +17,6 @@ import 'package:fluffychat/utils/room_extension.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pedantic/pedantic.dart';
 
