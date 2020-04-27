@@ -178,7 +178,7 @@ class _ChatState extends State<_Chat> {
   void sendFileAction(BuildContext context) async {
     File file = await FilePicker.getFile();
     if (file == null) return;
-    await matrix.tryRequestWithLoadingDialog(
+    await SimpleDialogs(context).tryRequestWithLoadingDialog(
       room.sendFileEvent(
         MatrixFile(bytes: await file.readAsBytes(), path: file.path),
       ),
@@ -192,7 +192,7 @@ class _ChatState extends State<_Chat> {
         maxWidth: 1600,
         maxHeight: 1600);
     if (file == null) return;
-    await matrix.tryRequestWithLoadingDialog(
+    await SimpleDialogs(context).tryRequestWithLoadingDialog(
       room.sendImageEvent(
         MatrixFile(bytes: await file.readAsBytes(), path: file.path),
       ),
@@ -206,7 +206,7 @@ class _ChatState extends State<_Chat> {
         maxWidth: 1600,
         maxHeight: 1600);
     if (file == null) return;
-    await matrix.tryRequestWithLoadingDialog(
+    await SimpleDialogs(context).tryRequestWithLoadingDialog(
       room.sendImageEvent(
         MatrixFile(bytes: await file.readAsBytes(), path: file.path),
       ),
@@ -222,7 +222,7 @@ class _ChatState extends State<_Chat> {
             ));
     if (result == null) return;
     final File audioFile = File(result);
-    await Matrix.of(context).tryRequestWithLoadingDialog(
+    await SimpleDialogs(context).tryRequestWithLoadingDialog(
       room.sendAudioEvent(
         MatrixFile(bytes: audioFile.readAsBytesSync(), path: audioFile.path),
       ),
@@ -253,7 +253,7 @@ class _ChatState extends State<_Chat> {
     );
     if (!confirmed) return;
     for (Event event in selectedEvents) {
-      await Matrix.of(context).tryRequestWithLoadingDialog(
+      await SimpleDialogs(context).tryRequestWithLoadingDialog(
           event.status > 0 ? event.redact() : event.remove());
     }
     setState(() => selectedEvents.clear());
@@ -310,7 +310,7 @@ class _ChatState extends State<_Chat> {
     matrix.activeRoomId = widget.id;
 
     if (room.membership == Membership.invite) {
-      matrix.tryRequestWithLoadingDialog(room.join());
+      SimpleDialogs(context).tryRequestWithLoadingDialog(room.join());
     }
 
     String typingText = "";

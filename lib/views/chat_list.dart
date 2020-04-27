@@ -2,13 +2,15 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:famedlysdk/famedlysdk.dart';
+import 'package:fluffychat/components/dialogs/simple_dialogs.dart';
+import 'package:fluffychat/components/list_items/presence_list_item.dart';
 import 'package:fluffychat/components/list_items/public_room_list_item.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
+import 'package:share/share.dart';
 
-import '../components/dialogs/simple_dialogs.dart';
 import '../components/theme_switcher.dart';
 import '../components/adaptive_page_layout.dart';
 import '../components/list_items/chat_list_item.dart';
@@ -16,6 +18,7 @@ import '../components/matrix.dart';
 import '../i18n/i18n.dart';
 import '../utils/app_route.dart';
 import '../utils/url_launcher.dart';
+import '../utils/client_presence_extension.dart';
 import 'archive.dart';
 import 'new_group.dart';
 import 'new_private_chat.dart';
@@ -48,7 +51,7 @@ class ChatList extends StatefulWidget {
 }
 
 class _ChatListState extends State<ChatList> {
-  bool searchMode = false;
+  bool get searchMode => searchController.text?.isNotEmpty ?? false;
   StreamSubscription sub;
   final TextEditingController searchController = TextEditingController();
   SelectMode selectMode = SelectMode.normal;
@@ -71,10 +74,17 @@ class _ChatListState extends State<ChatList> {
   void initState() {
     searchController.addListener(() {
       coolDown?.cancel();
+      if (searchController.text.isEmpty) {
+        setState(() {
+          loadingPublicRooms = false;
+          publicRoomsResponse = null;
+        });
+        return;
+      }
       coolDown = Timer(Duration(seconds: 1), () async {
         setState(() => loadingPublicRooms = true);
         final newPublicRoomsResponse =
-            await Matrix.of(context).tryRequestWithErrorToast(
+            await SimpleDialogs(context).tryRequestWithErrorToast(
           Matrix.of(context).client.requestPublicRooms(
                 limit: 30,
                 includeAllNetworks: true,
@@ -160,6 +170,39 @@ class _ChatListState extends State<ChatList> {
     ReceiveSharingIntent.getInitialText().then(_processIncomingSharedText);
   }
 
+  void _drawerTapAction(Widget view) {
+    Navigator.of(context).pop();
+    Navigator.of(context).pushAndRemoveUntil(
+      AppRoute.defaultRoute(
+        context,
+        view,
+      ),
+      (r) => r.isFirst,
+    );
+  }
+
+  void _setStatus(BuildContext context) async {
+    Navigator.of(context).pop();
+    final status = await SimpleDialogs(context).enterText(
+      multiLine: true,
+      titleText: I18n.of(context).setStatus,
+      labelText: I18n.of(context).setStatus,
+      hintText: I18n.of(context).statusExampleMessage,
+    );
+    if (status?.isEmpty ?? true) return;
+    await SimpleDialogs(context).tryRequestWithLoadingDialog(
+      Matrix.of(context).client.jsonRequest(
+        type: HTTPType.PUT,
+        action:
+            '/client/r0/presence/${Matrix.of(context).client.userID}/status',
+        data: {
+          "presence": "online",
+          "status_msg": status,
+        },
+      ),
+    );
+  }
+
   @override
   void dispose() {
     sub?.cancel();
@@ -186,109 +229,100 @@ class _ChatListState extends State<ChatList> {
       setState(() => selectMode = SelectMode.normal);
     }
     return Scaffold(
-      appBar: AppBar(
-        title: searchMode
-            ? TextField(
-                autofocus: true,
-                autocorrect: false,
-                controller: searchController,
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  hintText: I18n.of(context).searchForAChat,
-                ),
-              )
-            : Text(
-                selectMode == SelectMode.share
-                    ? I18n.of(context).share
-                    : I18n.of(context).fluffychat,
-              ),
-        leading: searchMode
-            ? IconButton(
-                icon: Icon(Icons.arrow_back),
-                onPressed: () => setState(() {
-                  publicRoomsResponse = null;
-                  loadingPublicRooms = false;
-                  searchMode = false;
-                }),
-              )
-            : selectMode == SelectMode.share
-                ? IconButton(
-                    icon: Icon(Icons.close),
-                    onPressed: () {
-                      Matrix.of(context).shareContent = null;
-                      setState(() => selectMode = SelectMode.normal);
-                    },
-                  )
-                : null,
-        automaticallyImplyLeading: false,
-        actions: searchMode
-            ? <Widget>[
-                if (loadingPublicRooms)
-                  Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
-                    child: Center(
-                      child: CircularProgressIndicator(strokeWidth: 2),
+      drawer: selectMode == SelectMode.share
+          ? null
+          : Drawer(
+              child: SafeArea(
+                child: ListView(
+                  padding: EdgeInsets.zero,
+                  children: <Widget>[
+                    ListTile(
+                      leading: Icon(Icons.edit),
+                      title: Text(I18n.of(context).setStatus),
+                      onTap: () => _setStatus(context),
                     ),
-                  ),
-                IconButton(
-                  icon: Icon(Icons.domain),
-                  onPressed: () async {
-                    final String newSearchServer = await SimpleDialogs(context)
-                        .enterText(
-                            titleText: I18n.of(context).changeTheServer,
-                            labelText: I18n.of(context).changeTheServer,
-                            hintText: Matrix.of(context).client.userID.domain,
-                            prefixText: "https://");
-                    if (newSearchServer?.isNotEmpty ?? false) {
-                      searchServer = newSearchServer;
-                    }
-                  },
-                )
-              ]
-            : <Widget>[
-                IconButton(
-                  icon: Icon(Icons.search),
-                  onPressed: () => setState(() => searchMode = true),
+                    Divider(height: 1),
+                    ListTile(
+                      leading: Icon(Icons.people_outline),
+                      title: Text(I18n.of(context).createNewGroup),
+                      onTap: () => _drawerTapAction(NewGroupView()),
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.person_add),
+                      title: Text(I18n.of(context).newPrivateChat),
+                      onTap: () => _drawerTapAction(NewPrivateChatView()),
+                    ),
+                    Divider(height: 1),
+                    ListTile(
+                      leading: Icon(Icons.archive),
+                      title: Text(I18n.of(context).archive),
+                      onTap: () => _drawerTapAction(
+                        Archive(),
+                      ),
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.settings),
+                      title: Text(I18n.of(context).settings),
+                      onTap: () => _drawerTapAction(
+                        SettingsView(),
+                      ),
+                    ),
+                    Divider(height: 1),
+                    ListTile(
+                      leading: Icon(Icons.share),
+                      title: Text(I18n.of(context).inviteContact),
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        Share.share(I18n.of(context).inviteText(
+                            Matrix.of(context).client.userID,
+                            "https://matrix.to/#/${Matrix.of(context).client.userID}"));
+                      },
+                    ),
+                  ],
                 ),
-                if (selectMode == SelectMode.normal)
-                  PopupMenuButton(
-                    onSelected: (String choice) {
-                      switch (choice) {
-                        case "settings":
-                          Navigator.of(context).pushAndRemoveUntil(
-                            AppRoute.defaultRoute(
-                              context,
-                              SettingsView(),
+              ),
+            ),
+      appBar: AppBar(
+        leading: selectMode != SelectMode.share
+            ? null
+            : IconButton(
+                icon: Icon(Icons.close),
+                onPressed: () => Matrix.of(context).shareContent = null,
+              ),
+        titleSpacing: 0,
+        title: selectMode == SelectMode.share
+            ? Text(I18n.of(context).share)
+            : Container(
+                padding: EdgeInsets.all(8),
+                height: 42,
+                margin: EdgeInsets.only(right: 8),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).secondaryHeaderColor,
+                  borderRadius: BorderRadius.circular(90),
+                ),
+                child: TextField(
+                  autocorrect: false,
+                  controller: searchController,
+                  decoration: InputDecoration(
+                    suffixIcon: loadingPublicRooms
+                        ? Container(
+                            alignment: Alignment.centerRight,
+                            child: Container(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(),
                             ),
-                            (r) => r.isFirst,
-                          );
-                          break;
-                        case "archive":
-                          Navigator.of(context).pushAndRemoveUntil(
-                            AppRoute.defaultRoute(
-                              context,
-                              Archive(),
-                            ),
-                            (r) => r.isFirst,
-                          );
-                          break;
-                      }
-                    },
-                    itemBuilder: (BuildContext context) =>
-                        <PopupMenuEntry<String>>[
-                      PopupMenuItem<String>(
-                        value: "archive",
-                        child: Text(I18n.of(context).archive),
-                      ),
-                      PopupMenuItem<String>(
-                        value: "settings",
-                        child: Text(I18n.of(context).settings),
-                      ),
-                    ],
+                          )
+                        : Icon(Icons.search),
+                    contentPadding: EdgeInsets.all(9),
+                    border: InputBorder.none,
+                    hintText: I18n.of(context).searchForAChat,
                   ),
-              ],
+                ),
+              ),
       ),
-      floatingActionButton: selectMode == SelectMode.share
+      floatingActionButton: (AdaptivePageLayout.columnMode(context) ||
+              selectMode == SelectMode.share)
           ? null
           : SpeedDial(
               child: Icon(Icons.add),
@@ -349,24 +383,45 @@ class _ChatListState extends State<ChatList> {
                 (publicRoomsResponse?.publicRooms?.length ?? 0);
             final int totalCount = rooms.length + publicRoomsCount;
             return ListView.separated(
-              separatorBuilder: (BuildContext context, int i) =>
-                  i == totalCount - publicRoomsCount - 1
-                      ? Material(
-                          elevation: 2,
-                          child: ListTile(
-                            title: Text(I18n.of(context).publicRooms),
-                          ),
+                separatorBuilder: (BuildContext context, int i) =>
+                    i == totalCount - publicRoomsCount - 1
+                        ? Material(
+                            elevation: 2,
+                            child: ListTile(
+                              title: Text(I18n.of(context).publicRooms),
+                            ),
+                          )
+                        : Container(),
+                itemCount: totalCount + 1,
+                itemBuilder: (BuildContext context, int i) {
+                  if (i == 0) {
+                    return Matrix.of(context).client.statusList.isEmpty
+                        ? Container()
+                        : PreferredSize(
+                            preferredSize: Size.fromHeight(89),
+                            child: Container(
+                              height: 81,
+                              child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount:
+                                    Matrix.of(context).client.statusList.length,
+                                itemBuilder: (BuildContext context, int i) =>
+                                    PresenceListItem(Matrix.of(context)
+                                        .client
+                                        .statusList[i]),
+                              ),
+                            ),
+                          );
+                  }
+                  i--;
+                  return i < rooms.length
+                      ? ChatListItem(
+                          rooms[i],
+                          activeChat: widget.activeChat == rooms[i].id,
                         )
-                      : Container(),
-              itemCount: totalCount,
-              itemBuilder: (BuildContext context, int i) => i < rooms.length
-                  ? ChatListItem(
-                      rooms[i],
-                      activeChat: widget.activeChat == rooms[i].id,
-                    )
-                  : PublicRoomListItem(
-                      publicRoomsResponse.publicRooms[i - rooms.length]),
-            );
+                      : PublicRoomListItem(
+                          publicRoomsResponse.publicRooms[i - rooms.length]);
+                });
           } else {
             return Center(
               child: CircularProgressIndicator(),
