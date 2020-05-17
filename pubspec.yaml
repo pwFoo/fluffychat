@@ -25,10 +25,9 @@ dependencies:
   cupertino_icons: ^0.1.2
 
   famedlysdk:
-    path: /home/sorunome/repos/famedly/famedlysdk
-#    git:
-#      url: https://gitlab.com/famedly/famedlysdk.git
-#      ref: bb690a22daab54a53a8df8e2dffb87da8a374bb1
+    git:
+      url: https://gitlab.com/famedly/famedlysdk.git
+      ref: 3b9be3546a87def69c10675f2d66e4697ab7dc1b
 
   localstorage: ^3.0.1+4
   bubble: ^1.1.9+1
