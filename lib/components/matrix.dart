@@ -13,6 +13,8 @@ import '../l10n/l10n.dart';
 import '../utils/beautify_string_extension.dart';
 import '../utils/famedlysdk_store.dart';
 import 'avatar.dart';
+import '../views/key_verification.dart';
+import '../utils/app_route.dart';
 
 class Matrix extends StatefulWidget {
   static const String callNamespace = 'chat.fluffy.jitsi_call';
@@ -96,6 +98,7 @@ class MatrixState extends State<Matrix> {
       };
 
   StreamSubscription onRoomKeyRequestSub;
+  StreamSubscription onKeyVerificationRequestSub;
   StreamSubscription onJitsiCallSub;
 
   void onJitsiCall(EventUpdate eventUpdate) {
@@ -178,6 +181,22 @@ class MatrixState extends State<Matrix> {
           cancelText: L10n.of(context).deny,
         )) {
           await request.forwardKey();
+        }
+      });
+      onKeyVerificationRequestSub ??= client.onKeyVerificationRequest.stream.listen((KeyVerification request) async {
+        if (await SimpleDialogs(context).askConfirmation(
+          titleText: 'New verification request from ${request.userId} and device ${request.deviceId}',
+          contentText: 'Start verification?',
+        )) {
+          await request.acceptVerification();
+          await Navigator.of(context).push(
+            AppRoute.defaultRoute(
+              context,
+              KeyVerificationView(request: request),
+            ),
+          );
+        } else {
+          await request.rejectVerification();
         }
       });
       _initWithStore();

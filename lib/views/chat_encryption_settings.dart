@@ -6,6 +6,8 @@ import 'package:fluffychat/utils/beautify_string_extension.dart';
 import 'package:fluffychat/l10n/l10n.dart';
 import 'package:fluffychat/views/chat_list.dart';
 import 'package:flutter/material.dart';
+import 'key_verification.dart';
+import '../utils/app_route.dart';
 
 class ChatEncryptionSettingsView extends StatelessWidget {
   final String id;
@@ -109,8 +111,13 @@ class _ChatEncryptionSettingsState extends State<ChatEncryptionSettings> {
                               deviceKeys[i]
                                   .setBlocked(false, Matrix.of(context).client);
                             }
-                            deviceKeys[i]
-                                .setVerified(true, Matrix.of(context).client);
+                            final req = deviceKeys[i].startVerification(Matrix.of(context).client);
+                            Navigator.of(context).push(
+                              AppRoute.defaultRoute(
+                                context,
+                                KeyVerificationView(request: req),
+                              ),
+                            );
                           } else {
                             if (deviceKeys[i].verified) {
                               deviceKeys[i].setVerified(
