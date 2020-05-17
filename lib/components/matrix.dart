@@ -225,6 +225,7 @@ class MatrixState extends State<Matrix> {
   @override
   void dispose() {
     onRoomKeyRequestSub?.cancel();
+    onKeyVerificationRequestSub?.cancel();
     onJitsiCallSub?.cancel();
     super.dispose();
   }
