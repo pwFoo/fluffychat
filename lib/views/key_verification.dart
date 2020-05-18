@@ -42,8 +42,21 @@ class _KeyVerificationPageState extends State<KeyVerificationPage> {
       case KeyVerificationState.waitingAccept:
         return Text('Waiting for partner to accept the request...');
       case KeyVerificationState.askSas:
-        final emojis = widget.request.sasEmojis;
-        final emojiWidgets = emojis.map((e) => Text(e.emoji, style: TextStyle(fontSize: 20))).toList();
+        var emojiWidgets = <Widget>[];
+        // maybe add a button to switch between the two and only determine default
+        // view for if "moji" is a present sasType or not?
+        if (widget.request.sasTypes.contains('emoji')) {
+          emojiWidgets = widget.request.sasEmojis.map((e) => Text(e.emoji, style: TextStyle(fontSize: 20))).toList();
+        } else {
+          final numbers = widget.request.sasNumbers;
+          emojiWidgets = <Widget>[
+            Text(numbers[0].toString(), style: TextStyle(fontSize: 40)),
+            Text('-', style: TextStyle(fontSize: 40)),
+            Text(numbers[1].toString(), style: TextStyle(fontSize: 40)),
+            Text('-', style: TextStyle(fontSize: 40)),
+            Text(numbers[2].toString(), style: TextStyle(fontSize: 40)),
+          ];  
+        }
         return Column(
           children: <Widget>[
             Row(

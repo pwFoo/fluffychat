@@ -18,9 +18,9 @@ class HomeserverPicker extends StatelessWidget {
   }
 
   void _checkHomeserverAction(String homeserver, BuildContext context) async {
-    if (!homeserver.startsWith('https://')) {
-      homeserver = 'https://$homeserver';
-    }
+//    if (!homeserver.startsWith('https://')) {
+//      homeserver = 'https://$homeserver';
+//    }
     final success = await SimpleDialogs(context).tryRequestWithLoadingDialog(
         Matrix.of(context).client.checkServer(homeserver));
     if (success != false) {
