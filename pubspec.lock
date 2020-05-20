@@ -133,8 +133,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "2b8f4b0d19df91caf002052ce793bd1a28630cc3"
-      resolved-ref: "2b8f4b0d19df91caf002052ce793bd1a28630cc3"
+      ref: "359e03496ad72f125ae275788621ac4f42d99d01"
+      resolved-ref: "359e03496ad72f125ae275788621ac4f42d99d01"
       url: "https://gitlab.com/famedly/famedlysdk.git"
     source: git
     version: "0.0.1"
@@ -581,7 +581,7 @@ packages:
       name: pub_semver
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.4.4"
+    version: "1.4.2"
   quiver:
     dependency: transitive
     description:
