@@ -1,4 +1,5 @@
-import 'package:bot_toast/bot_toast.dart';
+import 'package:flushbar/flushbar.dart';
+
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
@@ -169,10 +170,10 @@ class SimpleDialogs {
           onAdditionalAuth != null) {
         return await tryRequestWithErrorToast(onAdditionalAuth(exception));
       } else {
-        BotToast.showText(text: exception.errorMessage);
+        await Flushbar(message: exception.errorMessage).show(context);
       }
     } catch (exception) {
-      BotToast.showText(text: exception.toString());
+      await Flushbar(message: exception.toString()).show(context);
       return false;
     }
   }

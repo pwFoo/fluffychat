@@ -1,4 +1,5 @@
-import 'package:bot_toast/bot_toast.dart';
+import 'package:flushbar/flushbar.dart';
+
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:famedlysdk/matrix_api.dart';
 import 'package:fluffychat/components/adaptive_page_layout.dart';
@@ -46,7 +47,8 @@ class _ChatDetailsState extends State<ChatDetails> {
       widget.room.setName(displayname),
     );
     if (success != false) {
-      BotToast.showText(text: L10n.of(context).displaynameHasBeenChanged);
+      await Flushbar(message: L10n.of(context).displaynameHasBeenChanged)
+          .show(context);
     }
   }
 
@@ -99,7 +101,8 @@ class _ChatDetailsState extends State<ChatDetails> {
       widget.room.setDescription(displayname),
     );
     if (success != false) {
-      BotToast.showText(text: L10n.of(context).groupDescriptionHasBeenChanged);
+      await Flushbar(message: L10n.of(context).groupDescriptionHasBeenChanged)
+          .show(context);
     }
   }
 
@@ -119,7 +122,8 @@ class _ChatDetailsState extends State<ChatDetails> {
       ),
     );
     if (success != false) {
-      BotToast.showText(text: L10n.of(context).avatarHasBeenChanged);
+      await Flushbar(message: L10n.of(context).avatarHasBeenChanged)
+          .show(context);
     }
   }
 
@@ -170,8 +174,9 @@ class _ChatDetailsState extends State<ChatDetails> {
                             Clipboard.setData(
                               ClipboardData(text: widget.room.canonicalAlias),
                             );
-                            BotToast.showText(
-                                text: L10n.of(context).copiedToClipboard);
+                            Flushbar(
+                                    message: L10n.of(context).copiedToClipboard)
+                                .show(context);
                           },
                         ),
                       ChatSettingsPopupMenu(widget.room, false)

@@ -1,6 +1,7 @@
 import 'dart:async';
 
-import 'package:bot_toast/bot_toast.dart';
+import 'package:flushbar/flushbar.dart';
+
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:famedlysdk/matrix_api.dart';
 import 'package:fluffychat/components/adaptive_page_layout.dart';
@@ -60,7 +61,8 @@ class _InvitationSelectionState extends State<InvitationSelection> {
       widget.room.invite(id),
     );
     if (success != false) {
-      BotToast.showText(text: L10n.of(context).contactHasBeenInvitedToTheGroup);
+      await Flushbar(message: L10n.of(context).contactHasBeenInvitedToTheGroup)
+          .show(context);
     }
   }
 

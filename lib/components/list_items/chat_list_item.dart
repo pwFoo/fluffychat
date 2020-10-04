@@ -1,4 +1,5 @@
-import 'package:bot_toast/bot_toast.dart';
+import 'package:flushbar/flushbar.dart';
+
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:fluffychat/utils/matrix_locals.dart';
 import 'package:fluffychat/views/chat.dart';
@@ -41,7 +42,8 @@ class ChatListItem extends StatelessWidget {
       }
 
       if (room.membership == Membership.ban) {
-        BotToast.showText(text: L10n.of(context).youHaveBeenBannedFromThisChat);
+        await Flushbar(message: L10n.of(context).youHaveBeenBannedFromThisChat)
+            .show(context);
         return;
       }
 

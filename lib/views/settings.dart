@@ -1,6 +1,7 @@
 import 'dart:io';
 
-import 'package:bot_toast/bot_toast.dart';
+import 'package:flushbar/flushbar.dart';
+
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:fluffychat/components/settings_themes.dart';
 import 'package:fluffychat/config/app_config.dart';
@@ -72,7 +73,8 @@ class _SettingsState extends State<Settings> {
           .client
           .changePassword(newPassword, oldPassword: oldPassword),
     );
-    BotToast.showText(text: L10n.of(context).passwordHasBeenChanged);
+    await Flushbar(message: L10n.of(context).passwordHasBeenChanged)
+        .show(context);
   }
 
   void _deleteAccountAction(BuildContext context) async {

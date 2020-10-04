@@ -1,6 +1,7 @@
 import 'dart:async';
 
-import 'package:bot_toast/bot_toast.dart';
+import 'package:flushbar/flushbar.dart';
+
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:fluffychat/utils/app_route.dart';
 import 'package:fluffychat/views/chat_encryption_settings.dart';
@@ -22,7 +23,8 @@ class _EncryptionButtonState extends State<EncryptionButton> {
 
   void _enableEncryptionAction() async {
     if (widget.room.encrypted) {
-      BotToast.showText(text: L10n.of(context).warningEncryptionInBeta);
+      await Flushbar(message: L10n.of(context).warningEncryptionInBeta)
+          .show(context);
       await Navigator.of(context).push(
         AppRoute.defaultRoute(
           context,
@@ -32,7 +34,8 @@ class _EncryptionButtonState extends State<EncryptionButton> {
       return;
     }
     if (!widget.room.client.encryptionEnabled) {
-      BotToast.showText(text: L10n.of(context).needPantalaimonWarning);
+      await Flushbar(message: L10n.of(context).needPantalaimonWarning)
+          .show(context);
       return;
     }
     if (await SimpleDialogs(context).askConfirmation(

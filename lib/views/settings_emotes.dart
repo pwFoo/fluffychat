@@ -1,4 +1,5 @@
-import 'package:bot_toast/bot_toast.dart';
+import 'package:flushbar/flushbar.dart';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:flutter/foundation.dart';
@@ -447,7 +448,8 @@ class _EmoteImagePickerState extends State<_EmoteImagePicker> {
         ),
         onPressed: () async {
           if (kIsWeb) {
-            BotToast.showText(text: L10n.of(context).notSupportedInWeb);
+            await Flushbar(message: L10n.of(context).notSupportedInWeb)
+                .show(context);
             return;
           }
           var file = await MemoryFilePicker.getImage(
