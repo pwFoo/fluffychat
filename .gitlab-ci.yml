@@ -192,6 +192,7 @@ build_linux:
     - flutter config --enable-linux-desktop
     - flutter pub get
     - flutter build linux --release
+    - ./linux/install_libs.sh
   artifacts:
     when: on_success
     paths:
