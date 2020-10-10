@@ -199,6 +199,7 @@ build_linux:
       - build/linux/release/bundle/
   only:
     - main
+    - ll/improve-linux
   
 snap:publish:
   stage: publish
