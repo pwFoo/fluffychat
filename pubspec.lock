@@ -566,8 +566,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: master
-      resolved-ref: c8eb59c25c4e3a568bd64e4722108ec45259e157
+      ref: isolate
+      resolved-ref: fc24ec9888d32aee082c98cb8451b3cfd6cf4fe1
       url: "https://gitlab.com/famedly/libraries/native_imaging.git"
     source: git
     version: "0.0.1"
