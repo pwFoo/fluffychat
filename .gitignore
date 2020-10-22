@@ -49,3 +49,8 @@ lib/generated_plugin_registrant.dart
 **/android/app/.cxx
 android/key.jks
 lib/l10n_old
+
+Fluffychat.wixobj
+PFiles
+Fluffychat.wixpdb
+Fluffychat.msi

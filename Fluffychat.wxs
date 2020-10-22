@@ -1,0 +1,134 @@
+<?xml version='1.0' encoding='windows-1252'?>
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
+    <Product Name='Fluffychat' Manufacturer='Christian Pauly'
+        Id='6C3A21BE-CA52-4224-A027-B7D9B39D9B82'
+        UpgradeCode='014A9941-BCC1-4A1D-A9AD-D6199F197AC8'
+        Language='1031' Version='0.20.0'>
+        <!-- TODO allow setting version from ci -->
+        <Package Id='*' Keywords='Installer' Description="Fluffychat Installer" Manufacturer='Christian Pauly'
+            InstallerVersion='100' Languages='1031' />
+        <Media Id='1' />
+        <Directory Id='TARGETDIR' Name='SourceDir'>
+            <Directory Id='ProgramFilesFolder' Name='PFiles'>
+                <Directory Id='Fluffychat' Name='Fluffychat'>
+                    <Directory Id='INSTALLDIR' Name='Fluffychat'>
+                        <Component Id='MainExecutable' Guid='C39A395D-0079-4DFF-AEFA-BC033998A74C'>
+                            <File Id='FluffychatEXE' Name='fluffychat.exe' Source='build\windows\runner\Release\fluffychat.exe' KeyPath='yes'>
+                                <Shortcut Id="startmenuFluffychat" Directory="ProgramMenuDir" Name="Fluffychat"
+                                    WorkingDirectory='INSTALLDIR' Icon="fluffychat.exe" IconIndex="0" Advertise="yes" />
+                                <Shortcut Id="desktopFluffychat" Directory="DesktopFolder" Name="Fluffychat"
+                                    WorkingDirectory='INSTALLDIR' Icon="fluffychat.exe" IconIndex="0" Advertise="yes" />
+                            </File>
+                        </Component>
+                        <Component Id='FlutterLibraries' Guid='8584DC49-A0EE-4A14-A7C0-691AEF96855C'>
+                            <File Id='FileChooserPluginDLL' Name='file_chooser_plugin.dll' Source='build\windows\runner\Release\file_chooser_plugin.dll'/>
+                            <File Id='FlutterWindowsDLL' Name='flutter_windows.dll' Source='build\windows\runner\Release\flutter_windows.dll' KeyPath='yes' />
+                            <File Id='Sqlite3DLL' Name='sqlite3.dll' Source='build\windows\runner\Release\sqlite3.dll'/>
+                            <File Id='OLMDLL' Name='libolm.dll' Source='build\windows\runner\Release\libolm.dll'/>
+                            <File Id='UrlLauncherWindowsDLL' Name='url_launcher_windows_plugin.dll' Source='build\windows\runner\Release\url_launcher_windows_plugin.dll'/>
+                        </Component>
+
+                        <Directory Id='DATA' Name='data'>
+                            <Component Id='AppLibraries' Guid='117C8656-F429-438C-85EF-16D5AF56AB42'>
+                                <File Id='AppSO' Name='app.so' Source='build\windows\runner\Release\data\app.so' KeyPath='yes' />
+                                <File Id='icudtlDat' Name='icudtl.dat' Source='build\windows\runner\Release\data\icudtl.dat' />
+                            </Component>
+                            <Directory Id='FLUTTER_ASSETS' Name='flutter_assets'>
+                                <Component Id='FlutterAssets' Guid='34A0FB5B-6FEE-4918-9974-F0C322BDB106'>
+                                    <File Id='AssetManifest' Name='AssetManifest.json' Source='build\windows\runner\Release\data\flutter_assets\AssetManifest.json' KeyPath='yes' />
+                                    <File Id='FontManifest' Name='FontManifest.json' Source='build\windows\runner\Release\data\flutter_assets\FontManifest.json' />
+                                    <File Id='KernelBlob' Name='kernel_blob.bin' Source='build\windows\runner\Release\data\flutter_assets\kernel_blob.bin' />
+                                    <File Id='NOTICES' Name='NOTICES' Source='build\windows\runner\Release\data\flutter_assets\NOTICES' />
+                                </Component>
+                                <Directory Id='FLUTTER_ASSETS_ASSETS' Name='assets'>
+                                    <Component Id='Assets' Guid='9972FD69-65BC-4A44-BD26-CDB3C76C703D'>
+                                        <File Id='ChatSVG' Name='chat.svg' Source='build\windows\runner\Release\data\flutter_assets\assets\chat.svg' KeyPath='yes' />
+                                        <File Id='FaviconICO' Name='favicon.ico' Source='build\windows\runner\Release\data\flutter_assets\assets\favicon.ico' />
+                                        <File Id='FaviconPNG' Name='favicon.png' Source='build\windows\runner\Release\data\flutter_assets\assets\favicon.png' />
+                                        <File Id='FluffychatBannerPNG' Name='fluffychat-banner.png' Source='build\windows\runner\Release\data\flutter_assets\assets\fluffychat-banner.png' />
+                                        <File Id='LogoPNG' Name='logo.png' Source='build\windows\runner\Release\data\flutter_assets\assets\logo.png' />
+                                        <File Id='LogoSVG' Name='logo.svg' Source='build\windows\runner\Release\data\flutter_assets\assets\logo.svg' />
+                                        <File Id='NewGroupWallpaperPNG' Name='new_group_wallpaper.png' Source='build\windows\runner\Release\data\flutter_assets\assets\new_group_wallpaper.png' />
+                                        <File Id='PrivateChatWallpaperPNG' Name='private_chat_wallpaper.png' Source='build\windows\runner\Release\data\flutter_assets\assets\private_chat_wallpaper.png' />
+                                    </Component>
+                                    <Directory Id='SOUNDS' Name='sounds'>
+                                        <Component Id='Sounds' Guid='F6C45765-EDDE-40BB-878B-1EF500EF2FCE'>
+                                            <File Id='NotificationsWAV' Name='notification.wav' Source='build\windows\runner\Release\data\flutter_assets\assets\sounds\notification.wav' KeyPath='yes' />
+                                        </Component>
+                                    </Directory>
+                                </Directory>
+
+                                <Directory Id='FONTS' Name='fonts'>
+                                    <Component Id='Fonts' Guid='EA962BE5-AD6F-4603-AB1D-F6EDC2180E02'>
+                                        <File Id='MaterialIconsRegularOTF' Name='MaterialIcons-Regular.otf' Source='build\windows\runner\Release\data\flutter_assets\fonts\MaterialIcons-Regular.otf' KeyPath='yes' />
+                                    </Component>
+                                </Directory>
+
+                                <Directory Id='PACKAGES' Name='packages'>
+                                    <Directory Id='CATEX' Name='catex'>
+                                        <Directory Id='CATEX_FONTS' Name='fonts'>
+                                            <Component Id='CATEX_FONTS_Fonts' Guid='E5CB0048-2961-48A8-B5C3-9320AAF7947C'>
+                                                <File Id='KaTeX_AMSRegularTTF' Name='KaTeX_AMS-Regular.ttf' Source='build\windows\runner\Release\data\flutter_assets\packages\catex\fonts\KaTeX_AMS-Regular.ttf' KeyPath='yes' />
+                                                <File Id='KaTeX_CaligraphicBoldTTF' Name='KaTeX_Caligraphic-Bold.ttf' Source='build\windows\runner\Release\data\flutter_assets\packages\catex\fonts\KaTeX_Caligraphic-Bold.ttf' />
+                                                <File Id='KaTeX_CaligraphicRegularTTF' Name='KaTeX_Caligraphic-Regular.ttf' Source='build\windows\runner\Release\data\flutter_assets\packages\catex\fonts\KaTeX_Caligraphic-Regular.ttf' />
+                                                <File Id='KaTeX_FrakturBoldTTF' Name='KaTeX_Fraktur-Bold.ttf' Source='build\windows\runner\Release\data\flutter_assets\packages\catex\fonts\KaTeX_Fraktur-Bold.ttf' />
+                                                <File Id='KaTeX_FrakturRegularTTF' Name='KaTeX_Fraktur-Regular.ttf' Source='build\windows\runner\Release\data\flutter_assets\packages\catex\fonts\KaTeX_Fraktur-Regular.ttf' />
+                                                <File Id='KaTeX_MainBoldTTF' Name='KaTeX_Main-Bold.ttf' Source='build\windows\runner\Release\data\flutter_assets\packages\catex\fonts\KaTeX_Main-Bold.ttf' />
+                                                <File Id='KaTeX_MainBoldItalicTTF' Name='KaTeX_Main-BoldItalic.ttf' Source='build\windows\runner\Release\data\flutter_assets\packages\catex\fonts\KaTeX_Main-BoldItalic.ttf' />
+                                                <File Id='KaTeX_MainItalicTTF' Name='KaTeX_Main-Italic.ttf' Source='build\windows\runner\Release\data\flutter_assets\packages\catex\fonts\KaTeX_Main-Italic.ttf' />
+                                                <File Id='KaTeX_MainRegularTTF' Name='KaTeX_Main-Regular.ttf' Source='build\windows\runner\Release\data\flutter_assets\packages\catex\fonts\KaTeX_Main-Regular.ttf' />
+                                                <File Id='KaTeX_MathBoldItalicTTF' Name='KaTeX_Math-BoldItalic.ttf' Source='build\windows\runner\Release\data\flutter_assets\packages\catex\fonts\KaTeX_Math-BoldItalic.ttf' />
+                                                <File Id='KaTeX_MathItalicTTF' Name='KaTeX_Math-Italic.ttf' Source='build\windows\runner\Release\data\flutter_assets\packages\catex\fonts\KaTeX_Math-Italic.ttf' />
+                                                <File Id='KaTeX_SansSerifBoldTTF' Name='KaTeX_SansSerif-Bold.ttf' Source='build\windows\runner\Release\data\flutter_assets\packages\catex\fonts\KaTeX_SansSerif-Bold.ttf' />
+                                                <File Id='KaTeX_SansSerifItalicTTF' Name='KaTeX_SansSerif-Italic.ttf' Source='build\windows\runner\Release\data\flutter_assets\packages\catex\fonts\KaTeX_SansSerif-Italic.ttf' />
+                                                <File Id='KaTeX_SansSerifRegularTTF' Name='KaTeX_SansSerif-Regular.ttf' Source='build\windows\runner\Release\data\flutter_assets\packages\catex\fonts\KaTeX_SansSerif-Regular.ttf' />
+                                                <File Id='KaTeX_ScriptRegularTTF' Name='KaTeX_Script-Regular.ttf' Source='build\windows\runner\Release\data\flutter_assets\packages\catex\fonts\KaTeX_Script-Regular.ttf' />
+                                                <File Id='KaTeX_Size1RegularTTF' Name='KaTeX_Size1-Regular.ttf' Source='build\windows\runner\Release\data\flutter_assets\packages\catex\fonts\KaTeX_Size1-Regular.ttf' />
+                                                <File Id='KaTeX_Size2RegularTTF' Name='KaTeX_Size2-Regular.ttf' Source='build\windows\runner\Release\data\flutter_assets\packages\catex\fonts\KaTeX_Size2-Regular.ttf' />
+                                                <File Id='KaTeX_Size3RegularTTF' Name='KaTeX_Size3-Regular.ttf' Source='build\windows\runner\Release\data\flutter_assets\packages\catex\fonts\KaTeX_Size3-Regular.ttf' />
+                                                <File Id='KaTeX_Size4RegularTTF' Name='KaTeX_Size4-Regular.ttf' Source='build\windows\runner\Release\data\flutter_assets\packages\catex\fonts\KaTeX_Size4-Regular.ttf' />
+                                                <File Id='KaTeX_TypewriterRegularTTF' Name='KaTeX_Typewriter-Regular.ttf' Source='build\windows\runner\Release\data\flutter_assets\packages\catex\fonts\KaTeX_Typewriter-Regular.ttf' />
+                                            </Component>
+                                        </Directory>
+                                    </Directory>
+
+                                    <Directory Id='CUPERTINO_ICONS' Name='cupertino_icons'>
+                                        <Directory Id='CUPERTINO_ICONS_ASSETS' Name='assets'>
+                                            <Component Id='CUPERTINO_ICONS_ASSETS_Fonts' Guid='FFD35BDB-BEE9-4899-A6B4-47CD7B3511C0'>
+                                                <File Id='CupertinoIconsTTF' Name='CupertinoIcons.ttf' Source='build\windows\runner\Release\data\flutter_assets\packages\cupertino_icons\assets\CupertinoIcons.ttf' KeyPath='yes' />
+                                            </Component>
+                                        </Directory>
+                                    </Directory>
+                                </Directory>
+                            </Directory>
+                        </Directory>
+                    </Directory>
+                </Directory>
+            </Directory>
+            <Directory Id="ProgramMenuFolder" Name="Programs">
+                <Directory Id="ProgramMenuDir" Name="Fluffychat">
+                    <Component Id="ProgramMenuDir" Guid="96BB4D6F-005E-4E28-BF4B-10FCD5F96AFF">
+                        <RemoveFolder Id='ProgramMenuDir' On='uninstall' />
+                        <RegistryValue Root='HKCU' Key='Software\[Manufacturer]\[ProductName]' Type='string' Value='' KeyPath='yes' />
+                    </Component>
+                </Directory>
+            </Directory>
+
+            <Directory Id="DesktopFolder" Name="Desktop" />
+        </Directory>
+
+        <Feature Id='Complete' Level='1'>
+            <ComponentRef Id='MainExecutable' />
+            <ComponentRef Id='FlutterLibraries' />
+            <ComponentRef Id='AppLibraries' />
+            <ComponentRef Id='FlutterAssets' />
+            <ComponentRef Id='Assets' />
+            <ComponentRef Id='Sounds' />
+            <ComponentRef Id='Fonts' />
+            <ComponentRef Id='CATEX_FONTS_Fonts' />
+            <ComponentRef Id='CUPERTINO_ICONS_ASSETS_Fonts' />
+            <ComponentRef Id='ProgramMenuDir' />
+        </Feature>
+        <Icon Id="fluffychat.exe" SourceFile="build\windows\runner\Release\fluffychat.exe" />
+    </Product>
+</Wix>
