@@ -78,7 +78,7 @@ package_windows:
     - .shared_windows_runners
   needs:
     - build_windows
-  stage: deploy
+  stage: publish
   script:
     - Invoke-WebRequest https://github.com/wixtoolset/wix3/releases/download/wix3112rtm/wix311-binaries.zip -OutFile .\wix.zip
     - Expand-Archive -Path wix.zip -DestinationPath .\wix\
