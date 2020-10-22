@@ -71,7 +71,8 @@ Future<Database> constructDb(
   } else if (Platform.isWindows) {
     debugPrint('[Moor] using Windows desktop moor');
     open.overrideFor(OperatingSystem.windows, _openOnWindows);
-    return Database(moor.VmDatabase.memory());
+    final appDocDir = await getApplicationSupportDirectory();
+    return Database(moor.VmDatabase(File('${appDocDir.path}/$filename')));
   }
   throw Exception('Platform not supported');
 }
