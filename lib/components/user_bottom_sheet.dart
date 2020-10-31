@@ -12,6 +12,8 @@ import 'package:flutter_gen/gen_l10n/l10n.dart';
 import '../utils/presence_extension.dart';
 import 'dialogs/simple_dialogs.dart';
 import 'matrix.dart';
+import '../views/key_verification.dart';
+import '../utils/app_route.dart';
 
 class UserBottomSheet extends StatelessWidget {
   final User user;
@@ -74,7 +76,9 @@ class UserBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final presence = Matrix.of(context).client.presences[user.id];
+    final client = Matrix.of(context).client;
+    final presence = client.presences[user.id];
+    final verificationStatus = client.userDeviceKeys[user.id]?.verified;
     var items = <PopupMenuEntry<String>>[];
 
     if (onMention != null) {
@@ -145,6 +149,30 @@ class UserBottomSheet extends StatelessWidget {
                 ),
                 title: Text(user.calcDisplayname()),
                 actions: [
+                  if (verificationStatus != null)
+                    InkWell(
+                      child: Icon(
+                        Icons.lock,
+                        color: {
+                              UserVerifiedStatus.unknownDevice: Colors.red,
+                              UserVerifiedStatus.verified: Colors.green,
+                            }[verificationStatus] ??
+                            Colors.orange,
+                      ),
+                      onTap: () async {
+                        if (verificationStatus != UserVerifiedStatus.unknown) {
+                          return;
+                        }
+                        final req = await client.userDeviceKeys[user.id]
+                            .startVerification();
+                        await Navigator.of(context).push(
+                          AppRoute.defaultRoute(
+                            context,
+                            KeyVerificationView(request: req),
+                          ),
+                        );
+                      },
+                    ),
                   if (user.id != Matrix.of(context).client.userID)
                     PopupMenuButton(
                       itemBuilder: (_) => items,

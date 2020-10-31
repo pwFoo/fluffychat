@@ -215,8 +215,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "955fb747c29eab76b17eb9a13ebc15026e917fb8"
-      resolved-ref: "955fb747c29eab76b17eb9a13ebc15026e917fb8"
+      ref: "15d817023d34f813e95eba6ca8c71c575b8c2457"
+      resolved-ref: "15d817023d34f813e95eba6ca8c71c575b8c2457"
       url: "https://gitlab.com/famedly/famedlysdk.git"
     source: git
     version: "0.0.1"
@@ -1144,5 +1144,5 @@ packages:
     source: hosted
     version: "0.1.2"
 sdks:
-  dart: ">=2.10.2 <2.11.0"
+  dart: ">=2.10.2 <=2.11.0-161.0.dev"
   flutter: ">=1.22.2 <2.0.0"
