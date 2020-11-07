@@ -1,7 +1,10 @@
 import 'package:bot_toast/bot_toast.dart';
 import 'package:fluffychat/components/dialogs/simple_dialogs.dart';
+import 'package:fluffychat/config/app_config.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:sentry/sentry.dart';
 
 import 'famedlysdk_store.dart';
 
@@ -13,14 +16,27 @@ abstract class SentryController {
       confirmText: L10n.of(context).ok,
       cancelText: L10n.of(context).no,
     );
-    final storage = await getLocalStorage();
-    await storage.setItem('sentry', enableSentry);
+    final storage = Store();
+    await storage.setItem('sentry', enableSentry.toString());
     BotToast.showText(text: L10n.of(context).changesHaveBeenSaved);
     return;
   }
 
   static Future<bool> getSentryStatus() async {
-    final storage = await getLocalStorage();
-    return storage.getItem('sentry') as bool;
+    final storage = Store();
+    return await storage.getItem('sentry') == 'true';
+  }
+
+  static final sentry = SentryClient(dsn: AppConfig.sentryDsn);
+
+  static void captureException(error, stackTrace) async {
+    debugPrint(error.toString());
+    debugPrint(stackTrace.toString());
+    if (!kDebugMode && await getSentryStatus()) {
+      await sentry.captureException(
+        exception: error,
+        stackTrace: stackTrace,
+      );
+    }
   }
 }
