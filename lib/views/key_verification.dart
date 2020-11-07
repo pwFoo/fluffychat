@@ -78,19 +78,12 @@ class _KeyVerificationPageState extends State<KeyVerificationPage> {
             return;
           }
           SimpleDialogs(context).showLoadingDialog(context);
-          // make sure the loading spinner shows before we test the keys
-          await Future.delayed(Duration(milliseconds: 100));
           var valid = false;
           try {
-            await widget.request.openSSSS(recoveryKey: input);
+            await widget.request.openSSSS(keyOrPassphrase: input);
             valid = true;
           } catch (_) {
-            try {
-              await widget.request.openSSSS(passphrase: input);
-              valid = true;
-            } catch (_) {
-              valid = false;
-            }
+            valid = false;
           }
           await Navigator.of(context)?.pop();
           if (!valid) {

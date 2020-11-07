@@ -24,6 +24,7 @@ import '../utils/famedlysdk_store.dart';
 import '../views/key_verification.dart';
 import '../utils/platform_infos.dart';
 import 'avatar.dart';
+import 'dialogs/uia_dialog.dart';
 
 class Matrix extends StatefulWidget {
   static const String callNamespace = 'chat.fluffy.jitsi_call';
@@ -118,6 +119,7 @@ class MatrixState extends State<Matrix> {
   StreamSubscription onKeyVerificationRequestSub;
   StreamSubscription onJitsiCallSub;
   StreamSubscription onNotification;
+  StreamSubscription onUiaRequestSub;
   StreamSubscription<html.Event> onFocusSub;
   StreamSubscription<html.Event> onBlurSub;
 
@@ -297,6 +299,12 @@ class MatrixState extends State<Matrix> {
           await request.rejectVerification();
         }
       });
+      onUiaRequestSub ??= client.onUiaRequest.stream.listen((UiaRequest uia) {
+        showDialog(
+          context: context,
+          builder: (c) => UiaDialog(uia: uia),
+        );
+      });
       _initWithStore();
     } else {
       client = widget.client;
@@ -342,6 +350,7 @@ class MatrixState extends State<Matrix> {
     onKeyVerificationRequestSub?.cancel();
     onJitsiCallSub?.cancel();
     onNotification?.cancel();
+    onUiaRequestSub?.cancel();
     onFocusSub?.cancel();
     onBlurSub?.cancel();
     super.dispose();

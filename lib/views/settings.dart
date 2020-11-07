@@ -24,6 +24,7 @@ import '../utils/app_route.dart';
 import 'app_info.dart';
 import 'chat_list.dart';
 import 'settings_emotes.dart';
+import 'bootstrap.dart';
 
 class SettingsView extends StatelessWidget {
   @override
@@ -198,23 +199,12 @@ class _SettingsState extends State<Settings> {
     );
     if (str != null) {
       SimpleDialogs(context).showLoadingDialog(context);
-      // make sure the loading spinner shows before we test the keys
-      await Future.delayed(Duration(milliseconds: 100));
       var valid = false;
       try {
-        handle.unlock(recoveryKey: str);
+        await handle.unlock(keyOrPassphrase: str);
         valid = true;
       } catch (e, s) {
-        debugPrint('Couldn\'t use recovery key: ' + e.toString());
-        debugPrint(s.toString());
-        try {
-          handle.unlock(passphrase: str);
-          valid = true;
-        } catch (e, s) {
-          debugPrint('Couldn\'t use recovery passphrase: ' + e.toString());
-          debugPrint(s.toString());
-          valid = false;
-        }
+        valid = false;
       }
       await Navigator.of(context)?.pop();
       if (valid) {
@@ -466,10 +456,16 @@ class _SettingsState extends State<Settings> {
                                   : L10n.of(context).keysMissing)))
                   : null,
               onTap: () async {
-                if (!client.encryption.crossSigning.enabled) {
-                  await SimpleDialogs(context).inform(
-                    contentText: L10n.of(context).noCrossSignBootstrap,
+                if (true || !client.encryption.crossSigning.enabled) {
+                  await Navigator.of(context).push(
+                    AppRoute.defaultRoute(
+                      context,
+                      BootstrapView(),
+                    ),
                   );
+                  /*await SimpleDialogs(context).inform(
+                    contentText: L10n.of(context).noCrossSignBootstrap,
+                  );*/
                   return;
                 }
                 if (client.isUnknownSession) {

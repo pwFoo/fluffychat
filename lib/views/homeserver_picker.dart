@@ -27,9 +27,9 @@ class HomeserverPicker extends StatelessWidget {
       await SentryController.toggleSentryAction(context);
     }
 
-    if (!homeserver.startsWith('https://')) {
-      homeserver = 'https://$homeserver';
-    }
+//    if (!homeserver.startsWith('https://')) {
+//      homeserver = 'https://$homeserver';
+//    }
 
     final success = await SimpleDialogs(context).tryRequestWithLoadingDialog(
         checkHomeserver(homeserver, Matrix.of(context).client));
