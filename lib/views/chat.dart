@@ -266,14 +266,12 @@ class _ChatState extends State<_Chat> {
   }
 
   void voiceMessageAction(BuildContext context) async {
-    String result;
-    await showDialog(
-        context: context,
-        builder: (context) => RecordingDialog(
-              onFinished: (r) => result = r,
-            ));
-    if (result == null) return;
-    final audioFile = File(result);
+    final filePath = await showDialog<String>(
+      context: context,
+      builder: (context) => RecordingDialog(),
+    );
+    if (filePath == null) return;
+    final audioFile = File(filePath);
     // as we already explicitly say send in the recording dialog,
     // we do not need the send file dialog anymore. We can just send this straight away.
     await SimpleDialogs(context).tryRequestWithLoadingDialog(

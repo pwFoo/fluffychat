@@ -30,7 +30,7 @@ enum AudioPlayerStatus { NOT_DOWNLOADED, DOWNLOADING, DOWNLOADED }
 class _AudioPlayerState extends State<AudioPlayer> {
   AudioPlayerStatus status = AudioPlayerStatus.NOT_DOWNLOADED;
 
-  FlutterSound flutterSound = FlutterSound();
+  FlutterSoundPlayer flutterSound = FlutterSoundPlayer();
 
   StreamSubscription soundSubscription;
   Uint8List audioFile;
@@ -57,10 +57,12 @@ class _AudioPlayerState extends State<AudioPlayer> {
 
   @override
   void dispose() {
-    if (flutterSound.audioState == t_AUDIO_STATE.IS_PLAYING) {
+    if (flutterSound.playerState == PlayerState.isPlaying) {
       flutterSound.stopPlayer();
     }
     soundSubscription?.cancel();
+    flutterSound?.closeAudioSession();
+    flutterSound = null;
     super.dispose();
   }
 
@@ -79,28 +81,25 @@ class _AudioPlayerState extends State<AudioPlayer> {
   void _playAction() async {
     if (AudioPlayer.currentId != widget.event.eventId) {
       if (AudioPlayer.currentId != null) {
-        if (flutterSound.audioState != t_AUDIO_STATE.IS_STOPPED) {
+        if (flutterSound.playerState != PlayerState.isStopped) {
           await flutterSound.stopPlayer();
           setState(() => null);
         }
       }
       AudioPlayer.currentId = widget.event.eventId;
     }
-    switch (flutterSound.audioState) {
-      case t_AUDIO_STATE.IS_PLAYING:
+    switch (flutterSound.playerState) {
+      case PlayerState.isPlaying:
         await flutterSound.pausePlayer();
         break;
-      case t_AUDIO_STATE.IS_PAUSED:
+      case PlayerState.isPaused:
         await flutterSound.resumePlayer();
         break;
-      case t_AUDIO_STATE.IS_RECORDING:
-        break;
-      case t_AUDIO_STATE.IS_STOPPED:
-        await flutterSound.startPlayerFromBuffer(
-          audioFile,
-          codec: t_CODEC.CODEC_AAC,
+      case PlayerState.isStopped:
+        await flutterSound.startPlayer(
+          fromDataBuffer: audioFile,
         );
-        soundSubscription ??= flutterSound.onPlayerStateChanged.listen((e) {
+        soundSubscription ??= flutterSound.onProgress.listen((disposition) {
           if (AudioPlayer.currentId != widget.event.eventId) {
             soundSubscription?.cancel()?.then((f) => soundSubscription = null);
             setState(() {
@@ -108,16 +107,16 @@ class _AudioPlayerState extends State<AudioPlayer> {
               statusText = '00:00';
             });
             AudioPlayer.currentId = null;
-          } else if (e != null) {
-            var date =
-                DateTime.fromMillisecondsSinceEpoch(e.currentPosition.toInt());
+          } else if (disposition != null) {
+            var date = DateTime.fromMillisecondsSinceEpoch(
+                disposition.position.inMilliseconds.toInt());
             var txt = DateFormat('mm:ss', 'en_US').format(date);
             setState(() {
-              maxPosition = e.duration;
-              currentPosition = e.currentPosition;
+              maxPosition = disposition.duration.inMilliseconds.toDouble();
+              currentPosition = disposition.position.inMilliseconds.toDouble();
               statusText = txt;
             });
-            if (e.duration == e.currentPosition) {
+            if (disposition.duration == disposition.position) {
               soundSubscription
                   ?.cancel()
                   ?.then((f) => soundSubscription = null);
@@ -151,7 +150,7 @@ class _AudioPlayerState extends State<AudioPlayer> {
               ? CircularProgressIndicator(strokeWidth: 2)
               : IconButton(
                   icon: Icon(
-                    flutterSound.audioState == t_AUDIO_STATE.IS_PLAYING
+                    flutterSound.playerState == PlayerState.isPlaying
                         ? Icons.pause
                         : Icons.play_arrow,
                     color: widget.color,
@@ -168,8 +167,8 @@ class _AudioPlayerState extends State<AudioPlayer> {
         Expanded(
           child: Slider(
             value: currentPosition,
-            onChanged: (double position) =>
-                flutterSound.seekToPlayer(position.toInt()),
+            onChanged: (double position) => flutterSound
+                .seekToPlayer(Duration(milliseconds: position.toInt())),
             max: status == AudioPlayerStatus.DOWNLOADED ? maxPosition : 0,
             min: 0,
           ),

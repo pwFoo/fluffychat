@@ -6,16 +6,14 @@ import 'package:flutter_sound/flutter_sound.dart';
 import 'package:intl/intl.dart';
 
 class RecordingDialog extends StatefulWidget {
-  final Function onFinished;
-
-  const RecordingDialog({this.onFinished, Key key}) : super(key: key);
+  const RecordingDialog({Key key}) : super(key: key);
 
   @override
   _RecordingDialogState createState() => _RecordingDialogState();
 }
 
 class _RecordingDialogState extends State<RecordingDialog> {
-  FlutterSound flutterSound = FlutterSound();
+  FlutterSoundRecorder flutterSound = FlutterSoundRecorder();
   String time = '00:00:00';
 
   StreamSubscription _recorderSubscription;
@@ -24,12 +22,11 @@ class _RecordingDialogState extends State<RecordingDialog> {
 
   void startRecording() async {
     try {
-      await flutterSound.startRecorder(
-        codec: t_CODEC.CODEC_AAC,
-      );
-      _recorderSubscription = flutterSound.onRecorderStateChanged.listen((e) {
-        var date =
-            DateTime.fromMillisecondsSinceEpoch(e.currentPosition.toInt());
+      final recorder = await flutterSound.openAudioSession();
+      await recorder.startRecorder();
+      _recorderSubscription = flutterSound.onProgress.listen((disposition) {
+        var date = DateTime.fromMillisecondsSinceEpoch(
+            disposition.duration.inMilliseconds.toInt());
         setState(() => time = DateFormat('mm:ss:SS', 'en_US').format(date));
       });
     } catch (e) {
@@ -47,6 +44,8 @@ class _RecordingDialogState extends State<RecordingDialog> {
   void dispose() {
     if (flutterSound.isRecording) flutterSound.stopRecorder();
     _recorderSubscription?.cancel();
+    flutterSound?.closeAudioSession();
+    flutterSound = null;
     super.dispose();
   }
 
@@ -83,7 +82,7 @@ class _RecordingDialogState extends State<RecordingDialog> {
               color: Theme.of(context).textTheme.bodyText2.color.withAlpha(150),
             ),
           ),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => Navigator.of(context).pop<String>(null),
         ),
         FlatButton(
           child: Row(
@@ -95,11 +94,8 @@ class _RecordingDialogState extends State<RecordingDialog> {
           ),
           onPressed: () async {
             await _recorderSubscription?.cancel();
-            final result = await flutterSound.stopRecorder();
-            if (widget.onFinished != null) {
-              widget.onFinished(result);
-            }
-            Navigator.of(context).pop();
+            await flutterSound.stopRecorder();
+            Navigator.of(context).pop<String>(flutterSound.savedUri);
           },
         ),
       ],
