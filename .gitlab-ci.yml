@@ -97,6 +97,7 @@ build_android_apk:
   only:
     - main
     - tags
+    - krille/enable-background-push
 
 
 build_android_appbundle:

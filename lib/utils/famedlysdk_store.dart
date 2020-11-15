@@ -15,7 +15,6 @@ Future<Database> getDatabase(Client client) async {
   }
   _generateDatabaseLock = true;
   try {
-    if (_db != null) return _db;
     final store = Store();
     var password = await store.getItem(SettingKeys.databasePassword);
     var newPassword = false;
@@ -23,7 +22,7 @@ Future<Database> getDatabase(Client client) async {
       newPassword = true;
       password = randomString(255);
     }
-    _db = await constructDb(
+    final db = await constructDb(
       logStatements: false,
       filename: 'moor.sqlite',
       password: password,
@@ -31,13 +30,12 @@ Future<Database> getDatabase(Client client) async {
     if (newPassword) {
       await store.setItem(SettingKeys.databasePassword, password);
     }
-    return _db;
+    return db;
   } finally {
     _generateDatabaseLock = false;
   }
 }
 
-Database _db;
 bool _generateDatabaseLock = false;
 
 class Store {
