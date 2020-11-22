@@ -83,8 +83,9 @@ build_android_appbundle:
     when: on_success
     paths:
       - build/android/app-release.aab
-  #only:
-  #  - main
+  resource_group: playstore_release
+  only:
+    - main
     
 upload_to_fdroid_repo:
   stage: release
@@ -115,6 +116,7 @@ upload_to_fdroid_repo:
     - rsync -rav -e ssh ./ fluffy@fdroid.nordgedanken.dev:/fdroid/repo
     - ssh fluffy@fdroid.nordgedanken.dev "cd fdroid && fdroid update"
   needs: ["build_android_apk"]
+  resource_group: playstore_release
   only:
     - tags
 
@@ -235,6 +237,7 @@ upload-playstore:
   extends: .release
   stage: deploy
   script: [./scripts/release-playstore.sh]
+  resource_group: playstore_release
 
 release:
   extends: .release
