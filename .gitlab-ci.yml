@@ -67,10 +67,6 @@ build_android_apk:
   stage: coverage
   before_script: [./scripts/prepare-android-release.sh]
   script: [./scripts/build-android-apk.sh]
-  variables:
-    FDROID_KEY: ${FDROID_KEY}
-    FDROID_KEY_PASS: ${FDROID_KEY_PASS}
-    GOOGLE_SERVICES: ${GOOGLE_SERVICES}
   artifacts:
     when: on_success
     paths:
@@ -82,17 +78,13 @@ build_android_apk:
 build_android_appbundle:
   stage: coverage
   before_script: [./scripts/prepare-android-release.sh]
-  script: [./scripts/build-android-appbundle.sh]
-  variables:
-    FDROID_KEY: ${FDROID_KEY}
-    FDROID_KEY_PASS: ${FDROID_KEY_PASS}
-    GOOGLE_SERVICES: ${GOOGLE_SERVICES}
+  script: [./scripts/release-playstore-beta.sh]
   artifacts:
     when: on_success
     paths:
       - build/android/app-release.aab
-  only:
-    - main
+  #only:
+  #  - main
     
 upload_to_fdroid_repo:
   stage: release
@@ -238,6 +230,11 @@ upload-windows:
     - tar czf package.tar.gz -C build/windows/runner/Release/ .
     - |
       curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file package.tar.gz ${PACKAGE_REGISTRY_URL}/fluffychat-windows.tar.gz
+
+upload-playstore:
+  extends: .release
+  stage: deploy
+  script: [./scripts/release-playstore.sh]
 
 release:
   extends: .release
