@@ -16,9 +16,9 @@ update_fastlane
 default_platform(:android)
 
 platform :android do
-  lane :set_build_code_beta do
+  lane :set_build_code_internal do
     versions = google_play_track_version_codes(
-        track: "beta",
+        track: "internal",
         json_key: "./keys.json"
       )
     last_version = versions[0].to_i
@@ -35,16 +35,16 @@ platform :android do
     end
   end
 
-  lane :deploy_beta_test do
+  lane :deploy_internal_test do
     versions = google_play_track_version_codes(
-        track: "beta",
+        track: "internal",
         json_key: "./keys.json"
       )
     last_version = versions[0].to_i
-    upload_to_play_store(track: 'beta', aab: '../build/app/outputs/bundle/release/app-release.aab', version_code: "#{last_version+1}")
+    upload_to_play_store(track: 'internal', aab: '../build/app/outputs/bundle/release/app-release.aab', version_code: "#{last_version+1}")
   end
 
   lane :deploy_release do
-    upload_to_play_store(track: 'beta', track_promote_to: "production", deactivate_on_promote: false, skip_upload_changelogs: true)
+    upload_to_play_store(track: 'internal', track_promote_to: "production", deactivate_on_promote: false, skip_upload_changelogs: true)
   end
 end
