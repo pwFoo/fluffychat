@@ -62,6 +62,7 @@ build_android_debug:
       - build/app/outputs/apk/debug/app-debug.apk
   except:
     - main
+    - tags
 
 build_android_apk:
   stage: coverage
@@ -90,21 +91,9 @@ build_android_appbundle:
 upload_to_fdroid_repo:
   stage: release
   before_script:
-    ##
-    ## Install ssh-agent if not already installed.
-    ##
     - 'which ssh-agent || (sudo apt-get update -y && sudo apt-get install openssh-client -y )'
-    ##
-    ## Install rsync if not already installed.
-    ##
     - 'which rsync || (sudo apt-get update -y && sudo apt-get install rsync -y )'
-    ##
-    ## Install pcregrep if not already installed.
-    ##
     - 'which pcregrep || (sudo apt-get update -y && sudo apt-get install pcregrep -y )'
-    ##
-    ## Run ssh-agent (inside the build environment)
-    ##
     - eval $(ssh-agent -s)
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
     - mkdir -p ~/.ssh
@@ -118,7 +107,7 @@ upload_to_fdroid_repo:
   needs: ["build_android_apk"]
   resource_group: playstore_release
   only:
-    - tags
+    - main
 
 pages:
   stage: deploy
