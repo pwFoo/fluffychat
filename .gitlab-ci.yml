@@ -106,6 +106,7 @@ upload_to_fdroid_repo:
     - ssh fluffy@fdroid.nordgedanken.dev "cd fdroid && fdroid update"
   needs: ["build_android_apk"]
   resource_group: playstore_release
+  allow_failure: true
   only:
     - main
 
