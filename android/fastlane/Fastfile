@@ -47,3 +47,4 @@ platform :android do
   lane :deploy_release do
     upload_to_play_store(track: 'beta', track_promote_to: "production", deactivate_on_promote: false, skip_upload_changelogs: true)
   end
+end
