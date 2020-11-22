@@ -5,7 +5,7 @@ flutter pub get
 cd android
 bundle install
 bundle update fastlane
-#echo $PLAYSTORE_DEPLOY_KEY >> keys.json
+echo $PLAYSTORE_DEPLOY_KEY >> keys.json
 bundle exec fastlane set_build_code_beta
 cd ..
 flutter build appbundle --target-platform android-arm,android-arm64,android-x64
