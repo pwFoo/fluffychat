@@ -13,6 +13,8 @@ import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter_gen/gen_l10n/l10n_en.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:unified_push/unified_push.dart';
+import 'package:http/http.dart' as http;
 
 import '../components/matrix.dart';
 import '../config/setting_keys.dart';
@@ -28,86 +30,20 @@ abstract class FirebaseController {
   static Future<void> setupFirebase(
       MatrixState matrix, String clientName) async {
     if (!PlatformInfos.isMobile) return;
-    final client = matrix.client;
     if (Platform.isIOS) iOS_Permission();
-
-    String token;
-    try {
-      token = await _firebaseMessaging.getToken();
-    } catch (_) {
-      token = null;
-    }
-    if (token?.isEmpty ?? true) {
-      final storeItem = await matrix.store.getItem(SettingKeys.showNoGoogle);
-      final configOptionMissing = storeItem == null || storeItem.isEmpty;
-      if (configOptionMissing || (!configOptionMissing && storeItem == '1')) {
-        await FlushbarHelper.createError(
-          message: L10n.of(context).noGoogleServicesWarning,
-          duration: Duration(seconds: 15),
-        ).show(context);
-        if (configOptionMissing) {
-          await matrix.store.setItem(SettingKeys.showNoGoogle, '0');
-        }
-      }
-      return;
-    }
-    final pushers = await client.requestPushers().catchError((e) {
-      Logs().w('[Push] Unable to request pushers', e);
-      return <Pusher>[];
-    });
-    final currentPushers = pushers.where((pusher) => pusher.pushkey == token);
-    if (currentPushers.length == 1 &&
-        currentPushers.first.kind == 'http' &&
-        currentPushers.first.appId == AppConfig.pushNotificationsAppId &&
-        currentPushers.first.appDisplayName == clientName &&
-        currentPushers.first.deviceDisplayName == client.deviceName &&
-        currentPushers.first.lang == 'en' &&
-        currentPushers.first.data.url.toString() ==
-            AppConfig.pushNotificationsGatewayUrl &&
-        currentPushers.first.data.format ==
-            AppConfig.pushNotificationsPusherFormat) {
-      Logs().i('[Push] Pusher already set');
-    } else {
-      if (currentPushers.isNotEmpty) {
-        for (final currentPusher in currentPushers) {
-          currentPusher.pushkey = token;
-          currentPusher.kind = null;
-          await client.setPusher(
-            currentPusher,
-            append: true,
-          );
-          Logs().i('[Push] Remove legacy pusher for this device');
-        }
-      }
-      await client
-          .setPusher(
-        Pusher(
-          token,
-          AppConfig.pushNotificationsAppId,
-          clientName,
-          client.deviceName,
-          'en',
-          PusherData(
-            url: Uri.parse(AppConfig.pushNotificationsGatewayUrl),
-            format: AppConfig.pushNotificationsPusherFormat,
-          ),
-          kind: 'http',
-        ),
-        append: false,
-      )
-          .catchError((e, s) {
-        Logs().e('[Push] Unable to set pushers', e, s);
-        return [];
-      });
-    }
 
     Function goToRoom = (dynamic message) async {
       try {
         String roomId;
+        if (message is String && message[0] == '{') {
+          message = json.decode(message);
+        }
         if (message is String) {
           roomId = message;
         } else if (message is Map) {
-          roomId = (message['data'] ?? message)['room_id'];
+          roomId = (message['notification'] ??
+              message['data'] ??
+              message)['room_id'];
         }
         if (roomId?.isEmpty ?? true) throw ('Bad roomId');
         await matrix.widget.apl.currentState
@@ -133,6 +69,19 @@ abstract class FirebaseController {
     await _flutterLocalNotificationsPlugin.initialize(initializationSettings,
         onSelectNotification: goToRoom);
 
+    String fcmToken;
+    try {
+      fcmToken = await _firebaseMessaging.getToken();
+    } catch (_) {
+      fcmToken = null;
+    }
+    if (fcmToken?.isEmpty ?? true) {
+      await setupUnifiedPush(matrix, clientName);
+      return;
+    }
+    await setupPusher(
+        matrix, clientName, AppConfig.pushNotificationsGatewayUrl, fcmToken);
+
     _firebaseMessaging.configure(
       onMessage: _onMessage,
       onBackgroundMessage: _onMessage,
@@ -140,15 +89,132 @@ abstract class FirebaseController {
       onLaunch: goToRoom,
     );
     Logs().i('[Push] Firebase initialized');
-    return;
+  }
+
+  static Future<void> setupPusher(MatrixState matrix, String clientName,
+      String gatewayUrl, String token) async {
+    final client = matrix.client;
+    final pushers = await client.requestPushers().catchError((e) {
+      Logs().w('[Push] Unable to request pushers', e);
+      return <Pusher>[];
+    });
+    final currentPushers = pushers.where((pusher) => pusher.pushkey == token);
+    if (currentPushers.length == 1 &&
+        currentPushers.first.kind == 'http' &&
+        currentPushers.first.appId == AppConfig.pushNotificationsAppId &&
+        currentPushers.first.appDisplayName == clientName &&
+        currentPushers.first.deviceDisplayName == client.deviceName &&
+        currentPushers.first.lang == 'en' &&
+        currentPushers.first.data.url.toString() == gatewayUrl &&
+        currentPushers.first.data.format ==
+            AppConfig.pushNotificationsPusherFormat) {
+      Logs().i('[Push] Pusher already set');
+    } else {
+      if (currentPushers.isNotEmpty) {
+        for (final currentPusher in currentPushers) {
+          currentPusher.pushkey = token;
+          currentPusher.kind = null;
+          await client
+              .setPusher(
+            currentPusher,
+            append: true,
+          )
+              .catchError((e) {
+            Logs().w('[Push] Failed to remove old pusher', e);
+          });
+          Logs().i('[Push] Remove legacy pusher for this device');
+        }
+      }
+      await client
+          .setPusher(
+        Pusher(
+          token,
+          AppConfig.pushNotificationsAppId,
+          clientName,
+          client.deviceName,
+          'en',
+          PusherData(
+            url: Uri.parse(gatewayUrl),
+            format: AppConfig.pushNotificationsPusherFormat,
+          ),
+          kind: 'http',
+        ),
+        append: false,
+      )
+          .catchError((e, s) {
+        Logs().e('[Push] Unable to set pushers', e, s);
+        return [];
+      });
+    }
+  }
+
+  static Future<void> onUnifiedPushMessage(String payload) async {
+    try {
+      final data = json.decode(payload);
+      await _showDefaultNotification(data);
+    } catch (e, s) {
+      Logs().e('[Push] Failed to display message', e, s);
+    }
+  }
+
+  static Future<void> setupUnifiedPush(
+      MatrixState matrix, String clientName) async {
+    final onUpdate = () async {
+      if (UnifiedPush.registered) {
+        var endpoint =
+            'https://matrix.gateway.unifiedpush.org/_matrix/push/v1/notify';
+        try {
+          final url = Uri.parse(UnifiedPush.endpoint)
+              .replace(
+                path: '/_matrix/push/v1/notify',
+                query: '',
+              )
+              .toString()
+              .split('?')
+              .first;
+          final res = json.decode(utf8.decode((await http.get(url)).bodyBytes));
+          if (res['gateway'] == 'matrix') {
+            endpoint = url;
+          }
+        } catch (e) {
+          Logs().i('[Push] No self-hosted unified push gateway present: ' +
+              UnifiedPush.endpoint);
+        }
+        Logs().i('[Push] UnifiedPush using endpoint ' + endpoint);
+        await setupPusher(matrix, clientName, endpoint, UnifiedPush.endpoint);
+        return;
+      }
+      final distributors = await UnifiedPush.distributors;
+      if (distributors.isEmpty) {
+        // unified push failed, show no google services error
+        final storeItem = await matrix.store.getItem(SettingKeys.showNoGoogle);
+        final configOptionMissing = storeItem == null || storeItem.isEmpty;
+        if (configOptionMissing || (!configOptionMissing && storeItem == '1')) {
+          await FlushbarHelper.createError(
+            message: L10n.of(context).noGoogleServicesWarning,
+            duration: Duration(seconds: 15),
+          ).show(context);
+          if (configOptionMissing) {
+            await matrix.store.setItem(SettingKeys.showNoGoogle, '0');
+          }
+        }
+        return;
+      }
+      await UnifiedPush.register(distributors.first);
+    };
+
+    await UnifiedPush.initialize(onUpdate, onUnifiedPushMessage);
   }
 
   static Future<dynamic> _onMessage(Map<String, dynamic> message) async {
     try {
-      final data = message['data'] ?? message;
+      final data = message['notification'] ?? message['data'] ?? message;
       final String roomId = data['room_id'];
       final String eventId = data['event_id'];
-      final int unread = json.decode(data['counts'])['unread'];
+      final int unread = data
+          .tryGet<Map<String, dynamic>>(
+              'counts', json.decode(data.tryGet<String>('counts', '{}')))
+          .tryGet<int>('unread');
       if ((roomId?.isEmpty ?? true) ||
           (eventId?.isEmpty ?? true) ||
           unread == 0) {
@@ -245,24 +311,20 @@ abstract class FirebaseController {
       );
 
       // Show notification
-      var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-          AppConfig.pushNotificationsChannelId,
-          AppConfig.pushNotificationsChannelName,
-          AppConfig.pushNotificationsChannelDescription,
-          styleInformation: MessagingStyleInformation(
-            person,
-            conversationTitle: title,
-            messages: [
-              Message(
-                body,
-                event.originServerTs,
-                person,
-              )
-            ],
-          ),
-          importance: Importance.max,
-          priority: Priority.high,
-          ticker: i18n.newMessageInFluffyChat);
+      var androidPlatformChannelSpecifics = _getAndroidNotificationDetails(
+        styleInformation: MessagingStyleInformation(
+          person,
+          conversationTitle: title,
+          messages: [
+            Message(
+              body,
+              event.originServerTs,
+              person,
+            )
+          ],
+        ),
+        ticker: i18n.newMessageInFluffyChat,
+      );
       var iOSPlatformChannelSpecifics = IOSNotificationDetails();
       var platformChannelSpecifics = NotificationDetails(
         android: androidPlatformChannelSpecifics,
@@ -307,24 +369,21 @@ abstract class FirebaseController {
       final l10n = L10nEn();
 
       // Notification data and matrix data
-      Map<dynamic, dynamic> data = message['data'] ?? message;
+      Map<String, dynamic> data =
+          message['notification'] ?? message['data'] ?? message;
       String eventID = data['event_id'];
       String roomID = data['room_id'];
-      final int unread = data.containsKey('counts')
-          ? json.decode(data['counts'])['unread']
-          : 1;
+      final unread = data
+          .tryGet<Map<String, dynamic>>(
+              'counts', json.decode(data.tryGet<String>('counts', '{}')))
+          .tryGet<int>('unread', 1);
       await flutterLocalNotificationsPlugin.cancelAll();
       if (unread == 0 || roomID == null || eventID == null) {
         return;
       }
 
       // Display notification
-      var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-          AppConfig.pushNotificationsChannelId,
-          AppConfig.pushNotificationsChannelName,
-          AppConfig.pushNotificationsChannelDescription,
-          importance: Importance.max,
-          priority: Priority.high);
+      var androidPlatformChannelSpecifics = _getAndroidNotificationDetails();
       var iOSPlatformChannelSpecifics = IOSNotificationDetails();
       var platformChannelSpecifics = NotificationDetails(
         android: androidPlatformChannelSpecifics,
@@ -368,5 +427,22 @@ abstract class FirebaseController {
         .listen((IosNotificationSettings settings) {
       Logs().i('Settings registered: $settings');
     });
+  }
+
+  static AndroidNotificationDetails _getAndroidNotificationDetails(
+      {MessagingStyleInformation styleInformation, String ticker}) {
+    final color =
+        context != null ? Theme.of(context).primaryColor : Color(0xFF5625BA);
+
+    return AndroidNotificationDetails(
+      AppConfig.pushNotificationsChannelId,
+      AppConfig.pushNotificationsChannelName,
+      AppConfig.pushNotificationsChannelDescription,
+      styleInformation: styleInformation,
+      importance: Importance.max,
+      priority: Priority.high,
+      ticker: ticker,
+      color: color,
+    );
   }
 }

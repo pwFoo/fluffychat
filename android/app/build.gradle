@@ -43,8 +43,8 @@ android {
     }
 
     defaultConfig {
-        applicationId "chat.fluffy.fluffychat"
-        minSdkVersion 21
+        applicationId "chat.fluffy.fluffychat.dev"
+        minSdkVersion 24
         targetSdkVersion 30
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
@@ -88,5 +88,5 @@ dependencies {
 }
 
 if(file("google-services.json").exists()){
-    apply plugin: 'com.google.gms.google-services'
+    // apply plugin: 'com.google.gms.google-services'
 }
